@@ -22,6 +22,7 @@ public class HardwareFullBot {
     public DcMotorEx front_right = null;
     public DcMotorEx back_left =null;
     public DcMotorEx back_right =null;
+    public DcMotor spincarousel = null;
     //public DcMotorEx shooterEx;
     //public DcMotor shooter;
     //public DcMotor arm;

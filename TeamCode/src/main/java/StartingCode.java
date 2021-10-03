@@ -50,9 +50,9 @@ public class StartingCode extends LinearOpMode {
             waitForStart();
 
             if (opModeIsActive()) {
-                Straiph();
-                sleep(5000);
-                StopRobot();
+                GoToCarousel();
+                SpinCarousel();
+                MoveBlockToSU();
             }
 
             sleep(1000);     // pause for servos to move
@@ -60,18 +60,33 @@ public class StartingCode extends LinearOpMode {
             telemetry.addData("Path", "Complete");
             telemetry.update();
         }
-        public void StopRobot(){
+        public void StopRobot(){    //Set 4 Wheel Motor Powers To 0
             robot.front_left.setPower(0);
             robot.front_right.setPower(0);
             robot.back_left.setPower(0);
             robot.back_right.setPower(0);
         }
-        public void Straiph(){
+        public void GoToCarousel(){            // Robot Straiphs to the left for 5 seconds
             robot.front_right.setPower(-1);
             robot.back_right.setPower(-1);
             robot.front_left.setPower(1);
             robot.back_left.setPower(1);
+            sleep(5000);
+            StopRobot();
     }
+        public void SpinCarousel(){          //Spin carousel wheel for 1.5 seconds to deliver duck
+            robot.spincarousel.setPower(1);
+            sleep(1500);
+            robot.spincarousel.setPower(0);
+            StopRobot();
+        }
+        public void MoveBlockToSU(){  //Move Block To Storage Unit
+            robot.front_right.setPower(1);
+            robot.front_left.setPower(1);
+            robot.back_left.setPower(1);
+            robot.back_right.setPower(1);
+            sleep(2000);
+        }
        // public void clawOpen() {
             //clawControl(0);
         //}
