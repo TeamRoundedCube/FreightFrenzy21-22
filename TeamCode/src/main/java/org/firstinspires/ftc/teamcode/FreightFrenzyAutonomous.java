@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -54,7 +55,7 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "FreightFrenzyAutonomous", group = "Concept")
+@Autonomous(name = "FreightFrenzyAutonomous", group = "Concept")
 //@Disabled
 public class FreightFrenzyAutonomous extends LinearOpMode {
   /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
@@ -168,7 +169,10 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-
+                //Temporary Remove after testing (3 lines)
+                StrafeRightforTime(1, 5.5, 0);
+                DriveforTime(0.5, 1, 0);
+                sleep(2000);
                 //Move forward 2 inches- Vikrant
                 //DriveforTime(0.5, 0.5, 0);
 
