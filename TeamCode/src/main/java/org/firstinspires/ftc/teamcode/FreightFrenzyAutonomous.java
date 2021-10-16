@@ -85,12 +85,13 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     //Variable for levels on shipping hub- Vikrant
+    //level too generic
     int level;
 
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
     private static final String[] LABELS = {
       "Ball",
       "Cube",
@@ -260,40 +261,41 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
                 }
 
-                sleep(3000);
+                sleep(3000);//- remove later
                 //Drive to and spin the carousel- Vikrant
-                StrafeLeftforTime(1, 4, 0);
+                StrafeLeftforTime(1, 4);
                 //SpinCarousel(1, 2.5, 0);
 
                 //Go to shipping hub and drop block on correct level- Vikrant
+                //Picker might not be arm
                 if(level == 1) {
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel1();
 
                 }
                 if(level == 2){
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel2();
                 }
                 if(level == 3){
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel3();
                 }
 
                 //Move back 2 inches- Vikrant
-                DriveforTime(-1, 0.25, 0);
+                DriveforTime(-1, 0.25);
 
                 //Turn right to park in warehouse- Vikrant
-                turnRight(1, 2.5, 0);
+                turnRight(1, 2.5);
 
                 //Drive to warehouse and park inside warehouse- Vikrant
-                DriveforTime(1,5.5,0);
+                DriveforTime(1,5.5);
 
             }
         }
@@ -334,22 +336,21 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Function to make robot turn right
 
         public void turnRight(double speed,
-        double seconds,
-        double timeoutS) {
+                              double seconds) {
 
             // Ensure that the opmode is still active
             if (opModeIsActive()) {
 
                 runtime.reset();
-                back_right.setPower(0);
-                back_left.setPower(speed);
-                front_right.setPower(0);
-                front_left.setPower(speed);
-                seconds = seconds*1000;
-                double i = 0;
-                while (opModeIsActive() && i < seconds &&
-                        (runtime.seconds() < timeoutS)) {
-                    sleep(1);
+                double milliseconds = seconds*1000;
+                double i = runtime.milliseconds();
+                while (opModeIsActive() && i < milliseconds ) {
+
+                    front_right.setPower(0);
+                    back_right.setPower(0);
+                    front_left.setPower(speed);
+                    back_left.setPower(speed);
+
                     i++;
                 }
 
@@ -365,22 +366,21 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     //Drive forward for a certain number of seconds
     public void DriveforTime(double speed,
-                             double seconds,
-                             double timeoutS) {
+                             double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(speed);
-            back_left.setPower(speed);
-            front_right.setPower(speed);
-            front_left.setPower(speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                front_right.setPower(speed);
+                back_right.setPower(speed);
+                front_left.setPower(speed);
+                back_left.setPower(speed);
+
                 i++;
             }
 
@@ -395,22 +395,21 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     public void StrafeLeftforTime(double speed,
-                             double seconds,
-                             double timeoutS) {
+                                  double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(speed);
-            back_left.setPower(-speed);
-            front_right.setPower(speed);
-            front_left.setPower(-speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                front_right.setPower(speed);
+                back_right.setPower(speed);
+                front_left.setPower(-speed);
+                back_left.setPower(-speed);
+
                 i++;
             }
 
@@ -425,22 +424,21 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     public void StrafeRightforTime(double speed,
-                                  double seconds,
-                                  double timeoutS) {
+                                   double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(-speed);
-            back_left.setPower(speed);
-            front_right.setPower(-speed);
-            front_left.setPower(speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                front_right.setPower(-speed);
+                back_right.setPower(-speed);
+                front_left.setPower(speed);
+                back_left.setPower(speed);
+
                 i++;
             }
 
@@ -454,26 +452,26 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     }
     /*
     public void SpinCarousel(double speed,
-                                   double seconds,
-                                   double timeoutS) {
+                             double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            carousel_spinner.setPower(speed);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
 
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+                carousal_spinner.setPower(speed)
+
                 i++;
             }
 
             // Stop all motion;
-            carousel_spinner.setPower(0);
-
+            front_right.setPower(0);
+            back_right.setPower(0);
+            front_left.setPower(0);
+            back_left.setPower(0);
 
         }
     }
