@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,6 +45,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -71,13 +73,13 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
    */
 
     //Drive Motors- Vikrant
-    DcMotor back_left;
-    DcMotor back_right;
-    DcMotor front_left;
-    DcMotor front_right;
+    //DcMotor back_left;
+    //DcMotor back_right;
+    //DcMotor front_left;
+    //DcMotor front_right;
 
     //Carousel Spinning Motor- Vikrant
-    //DcMotor carousel_spinner;
+    //DcMotor spincarousel;
 
     //Arm to drop block on shipping hub
     //DcMotor arm;
@@ -86,12 +88,14 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     //Variable for levels on shipping hub- Vikrant
+    //level too generic
     int level;
 
     private ElapsedTime runtime = new ElapsedTime();
+    HardwareFullBot robot = new HardwareFullBot();
 
 
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
     private static final String[] LABELS = {
       "Ball",
       "Cube",
@@ -132,6 +136,8 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         // first.
 
         //HardwareMap for Drive Motors and arm- Vikrant
+        robot.init(hardwareMap);
+        /*
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
         front_left = hardwareMap.dcMotor.get("front_left");
@@ -142,6 +148,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        */
+
+        /*
+        front_left  = hardwareMap.get(DcMotorEx.class, "front_left");
+        front_right = hardwareMap.get(DcMotorEx.class, "front_right");
+        back_left    = hardwareMap.get(DcMotorEx.class, "back_left");
+        back_right    = hardwareMap.get(DcMotorEx.class, "back_right");
+
+        front_left.setDirection(DcMotorEx.Direction.REVERSE);
+        front_right.setDirection(DcMotorEx.Direction.FORWARD);
+        back_left.setDirection(DcMotorEx.Direction.REVERSE);
+        back_right .setDirection(DcMotorEx.Direction.FORWARD);
+        */
 
         initVuforia();
         initTfod();
@@ -264,40 +283,41 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
                 }
 
-                sleep(3000);
+                sleep(3000);//- remove later
                 //Drive to and spin the carousel- Vikrant
-                StrafeLeftforTime(1, 4, 0);
+                StrafeLeftforTime(1, 4);
                 //SpinCarousel(1, 2.5, 0);
 
                 //Go to shipping hub and drop block on correct level- Vikrant
+                //Picker might not be arm
                 if(level == 1) {
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel1();
 
                 }
                 if(level == 2){
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel2();
                 }
                 if(level == 3){
 
-                    StrafeRightforTime(1, 5.5, 0);
-                    DriveforTime(0.5, 1, 0);
+                    StrafeRightforTime(1, 5.5);
+                    DriveforTime(0.5, 1);
                     //dropBlockLevel3();
                 }
 
                 //Move back 2 inches- Vikrant
-                DriveforTime(-1, 0.25, 0);
+                DriveforTime(-1, 0.25);
 
                 //Turn right to park in warehouse- Vikrant
-                turnRight(1, 2.5, 0);
+                turnRight(1, 2.5);
 
                 //Drive to warehouse and park inside warehouse- Vikrant
-                DriveforTime(1,5.5,0);
+                DriveforTime(1,5.5);
 
             }
         }
@@ -338,30 +358,29 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Function to make robot turn right
 
         public void turnRight(double speed,
-        double seconds,
-        double timeoutS) {
+                              double seconds) {
 
             // Ensure that the opmode is still active
             if (opModeIsActive()) {
 
                 runtime.reset();
-                back_right.setPower(0);
-                back_left.setPower(speed);
-                front_right.setPower(0);
-                front_left.setPower(speed);
-                seconds = seconds*1000;
-                double i = 0;
-                while (opModeIsActive() && i < seconds &&
-                        (runtime.seconds() < timeoutS)) {
-                    sleep(1);
+                double milliseconds = seconds*1000;
+                double i = runtime.milliseconds();
+                while (opModeIsActive() && i < milliseconds ) {
+
+                    robot.front_right.setPower(0);
+                    robot.back_right.setPower(0);
+                    robot.front_left.setPower(speed);
+                    robot.back_left.setPower(speed);
+
                     i++;
                 }
 
                 // Stop all motion;
-                front_right.setPower(0);
-                back_right.setPower(0);
-                front_left.setPower(0);
-                back_left.setPower(0);
+                robot.front_right.setPower(0);
+                robot.back_right.setPower(0);
+                robot.front_left.setPower(0);
+                robot.back_left.setPower(0);
 
             }
         }
@@ -369,115 +388,112 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     //Drive forward for a certain number of seconds
     public void DriveforTime(double speed,
-                             double seconds,
-                             double timeoutS) {
+                             double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(speed);
-            back_left.setPower(speed);
-            front_right.setPower(speed);
-            front_left.setPower(speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                robot.front_right.setPower(speed);
+                robot.back_right.setPower(speed);
+                robot.front_left.setPower(speed);
+                robot.back_left.setPower(speed);
+
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
 
 
     public void StrafeLeftforTime(double speed,
-                             double seconds,
-                             double timeoutS) {
+                                  double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(speed);
-            back_left.setPower(-speed);
-            front_right.setPower(speed);
-            front_left.setPower(-speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                robot.front_right.setPower(speed);
+                robot.back_right.setPower(speed);
+                robot.front_left.setPower(-speed);
+                robot.back_left.setPower(-speed);
+
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
 
 
     public void StrafeRightforTime(double speed,
-                                  double seconds,
-                                  double timeoutS) {
+                                   double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            back_right.setPower(-speed);
-            back_left.setPower(speed);
-            front_right.setPower(-speed);
-            front_left.setPower(speed);
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
+
+                robot.front_right.setPower(-speed);
+                robot.back_right.setPower(-speed);
+                robot.front_left.setPower(speed);
+                robot.back_left.setPower(speed);
+
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
     /*
     public void SpinCarousel(double speed,
-                                   double seconds,
-                                   double timeoutS) {
+                             double seconds) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            carousel_spinner.setPower(speed);
+            double milliseconds = seconds*1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds ) {
 
-            seconds = seconds*1000;
-            double i = 0;
-            while (opModeIsActive() && i < seconds &&
-                    (runtime.seconds() < timeoutS)) {
-                sleep(1);
+                spincarousel.setPower(speed)
+
                 i++;
             }
 
             // Stop all motion;
-            carousel_spinner.setPower(0);
-
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
@@ -489,7 +505,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-70);
             clawOpen();
             clawClose();
@@ -504,7 +520,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-50);
             clawOpen();
             clawClose();
@@ -517,7 +533,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-30);
             clawOpen();
             clawClose();
@@ -541,8 +557,8 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Function that makes the arm move downwards
     public void moveArmDown(double angle) {
 
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setPower(0.6);
+        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.arm.setPower(0.6);
         sleep(600);
 
         arm.setPower(0);
@@ -554,11 +570,11 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     //Function that moves arm up
     public void moveArmUp(double angle) {
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setPower(-0.8);
+        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.arm.setPower(-0.8);
         sleep(500);
 
-        arm.setPower(0);
+        robot.arm.setPower(0);
 
 
 
