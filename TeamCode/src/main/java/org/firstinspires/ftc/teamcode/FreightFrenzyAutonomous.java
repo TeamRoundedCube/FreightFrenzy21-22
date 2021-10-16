@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -43,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -70,13 +72,13 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
    */
 
     //Drive Motors- Vikrant
-    DcMotor back_left;
-    DcMotor back_right;
-    DcMotor front_left;
-    DcMotor front_right;
+    //DcMotor back_left;
+    //DcMotor back_right;
+    //DcMotor front_left;
+    //DcMotor front_right;
 
     //Carousel Spinning Motor- Vikrant
-    //DcMotor carousel_spinner;
+    //DcMotor spincarousel;
 
     //Arm to drop block on shipping hub
     //DcMotor arm;
@@ -89,6 +91,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     int level;
 
     private ElapsedTime runtime = new ElapsedTime();
+    HardwareFullBot robot = new HardwareFullBot();
 
 
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
@@ -132,6 +135,8 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         // first.
 
         //HardwareMap for Drive Motors and arm- Vikrant
+        robot.init(hardwareMap);
+        /*
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
         front_left = hardwareMap.dcMotor.get("front_left");
@@ -142,6 +147,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        */
+
+        /*
+        front_left  = hardwareMap.get(DcMotorEx.class, "front_left");
+        front_right = hardwareMap.get(DcMotorEx.class, "front_right");
+        back_left    = hardwareMap.get(DcMotorEx.class, "back_left");
+        back_right    = hardwareMap.get(DcMotorEx.class, "back_right");
+
+        front_left.setDirection(DcMotorEx.Direction.REVERSE);
+        front_right.setDirection(DcMotorEx.Direction.FORWARD);
+        back_left.setDirection(DcMotorEx.Direction.REVERSE);
+        back_right .setDirection(DcMotorEx.Direction.FORWARD);
+        */
 
         initVuforia();
         initTfod();
@@ -346,19 +364,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                 double i = runtime.milliseconds();
                 while (opModeIsActive() && i < milliseconds ) {
 
-                    front_right.setPower(0);
-                    back_right.setPower(0);
-                    front_left.setPower(speed);
-                    back_left.setPower(speed);
+                    robot.front_right.setPower(0);
+                    robot.back_right.setPower(0);
+                    robot.front_left.setPower(speed);
+                    robot.back_left.setPower(speed);
 
                     i++;
                 }
 
                 // Stop all motion;
-                front_right.setPower(0);
-                back_right.setPower(0);
-                front_left.setPower(0);
-                back_left.setPower(0);
+                robot.front_right.setPower(0);
+                robot.back_right.setPower(0);
+                robot.front_left.setPower(0);
+                robot.back_left.setPower(0);
 
             }
         }
@@ -376,19 +394,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             double i = runtime.milliseconds();
             while (opModeIsActive() && i < milliseconds ) {
 
-                front_right.setPower(speed);
-                back_right.setPower(speed);
-                front_left.setPower(speed);
-                back_left.setPower(speed);
+                robot.front_right.setPower(speed);
+                robot.back_right.setPower(speed);
+                robot.front_left.setPower(speed);
+                robot.back_left.setPower(speed);
 
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
@@ -405,19 +423,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             double i = runtime.milliseconds();
             while (opModeIsActive() && i < milliseconds ) {
 
-                front_right.setPower(speed);
-                back_right.setPower(speed);
-                front_left.setPower(-speed);
-                back_left.setPower(-speed);
+                robot.front_right.setPower(speed);
+                robot.back_right.setPower(speed);
+                robot.front_left.setPower(-speed);
+                robot.back_left.setPower(-speed);
 
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
@@ -434,19 +452,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             double i = runtime.milliseconds();
             while (opModeIsActive() && i < milliseconds ) {
 
-                front_right.setPower(-speed);
-                back_right.setPower(-speed);
-                front_left.setPower(speed);
-                back_left.setPower(speed);
+                robot.front_right.setPower(-speed);
+                robot.back_right.setPower(-speed);
+                robot.front_left.setPower(speed);
+                robot.back_left.setPower(speed);
 
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
@@ -462,16 +480,16 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             double i = runtime.milliseconds();
             while (opModeIsActive() && i < milliseconds ) {
 
-                carousal_spinner.setPower(speed)
+                spincarousel.setPower(speed)
 
                 i++;
             }
 
             // Stop all motion;
-            front_right.setPower(0);
-            back_right.setPower(0);
-            front_left.setPower(0);
-            back_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
 
         }
     }
@@ -483,7 +501,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-70);
             clawOpen();
             clawClose();
@@ -498,7 +516,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-50);
             clawOpen();
             clawClose();
@@ -511,7 +529,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         if(opModeIsActive()) {
 
-            arm.setPower(0.5);
+            robot.arm.setPower(0.5);
             moveArmDown(-30);
             clawOpen();
             clawClose();
@@ -535,8 +553,8 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Function that makes the arm move downwards
     public void moveArmDown(double angle) {
 
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setPower(0.6);
+        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.arm.setPower(0.6);
         sleep(600);
 
         arm.setPower(0);
@@ -548,11 +566,11 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     //Function that moves arm up
     public void moveArmUp(double angle) {
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setPower(-0.8);
+        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.arm.setPower(-0.8);
         sleep(500);
 
-        arm.setPower(0);
+        robot.arm.setPower(0);
 
 
 
