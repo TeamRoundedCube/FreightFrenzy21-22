@@ -62,7 +62,7 @@ public class AutoTest extends LinearOpMode {
     //DcMotor arm;
     //Servo claw;
     private ElapsedTime runtime = new ElapsedTime();
-
+    HardwareFullBot robot = new HardwareFullBot();
 
     //Variable for levels on shipping hub- Vikrant
 
