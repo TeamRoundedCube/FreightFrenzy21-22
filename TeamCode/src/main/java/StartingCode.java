@@ -25,9 +25,7 @@ public class StartingCode extends LinearOpMode {
 
 
 
-
-
-        private ElapsedTime runtime = new ElapsedTime();
+       private ElapsedTime runtime = new ElapsedTime();
         HardwareFullBot robot = new HardwareFullBot();   // Use a Pushbot's hardware
 
 
