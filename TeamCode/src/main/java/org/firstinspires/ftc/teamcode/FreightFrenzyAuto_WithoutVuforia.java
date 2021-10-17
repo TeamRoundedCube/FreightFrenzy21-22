@@ -89,6 +89,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
  //           }
         }
     }
+    //Vikrant
   public void turnRight(double speed,
                           double seconds) {
         //For this method it takes 5 seconds to turn 90 degrees-Prabhav-10/17/2021
