@@ -114,43 +114,53 @@ public class MarcsTeleop extends OpMode {
 
         //If arm starts down
         int downPosition = 0;
-        int levelOne = 3585;
-        int levelTwo = 3200;
-        int levelThree = 2700;
+        int drivingPosition = 350;
+        int levelOne = 3000;
+        int levelTwo = 2555;
+        int levelThree = 1950;
 
 ///*
         //Arm
         if (gamepad1.dpad_down) {
-            robot.arm.setPower(-0.8);
-            robot.arm.setTargetPosition(downPosition);
+            robot.arm.setPower(-0.1);
+            robot.arm.setTargetPosition(downPosition);//Intake position
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(1000);
         } else if (gamepad1.dpad_right) {
             robot.arm.setPower(-0.25);
-            robot.arm.setTargetPosition(levelOne);
+            robot.arm.setTargetPosition(levelOne);// Level 1
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(1000);
         } else if (gamepad1.dpad_left) {
             robot.arm.setPower(-0.25);
-            robot.arm.setTargetPosition(levelThree);
+            robot.arm.setTargetPosition(levelTwo);//Level 2
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(1000);
         } else if (gamepad1.dpad_up) {
             //sleep(1000);
-            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.arm.setPower(0.8);
-            robot.arm.setTargetPosition(levelTwo);
+            robot.arm.setTargetPosition(levelThree);//Level 3
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+        } else if (gamepad1.right_bumper) {
+
+            robot.arm.setPower(0.25);
+            robot.arm.setTargetPosition(drivingPosition);//Driving Position
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+
         }
 //*/
         robot.spincarousel.setPower(gamepad1.right_trigger);
+            //robot.spincarousel.setPower(1);
         robot.spincarousel.setPower(-gamepad1.left_trigger);
+            //robot.spincarousel.setPower(-1);
 
         //X button Override
 
         if (gamepad1.x) {
             robot.arm.setPower(0);
-            //robot.drop.setPosition(1);
+            robot.basket.setPosition(1);
             //robot.flick.setPosition(0.38);
             robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             //robot.claw.resetDeviceConfigurationForOpMode();
@@ -165,10 +175,14 @@ public class MarcsTeleop extends OpMode {
         float intakePower = -gamepad2.left_stick_y;
         robot.intake.setPower(intakePower);
 
-
-
+        if(gamepad2.y) {
+            robot.basket.setPosition(1);
+        } else if(gamepad2.b) {
+            robot.basket.setPosition(0.1);
+        }
 
         telemetry.addData("Encoder", robot.arm.getCurrentPosition());
+        telemetry.addData("Basket", robot.basket.getPosition());
         //telemetry.addData("RightTrigger", gamepad1.right_trigger);
         //telemetry.addData("autoAim?", autoAim);
         telemetry.update();

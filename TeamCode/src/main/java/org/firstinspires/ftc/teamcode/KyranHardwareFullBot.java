@@ -41,25 +41,22 @@ public class KyranHardwareFullBot {
     //public VoltageSensor vsense;
 
     //public ColorSensor frontColor;
-    // public ColorSensor color_right;
+    //public ColorSensor color_right;
     //public ColorSensor color_left;
     //public DistanceSensor distance_left;
-    //  public ColorSensor bottomColor;
+    //public ColorSensor bottomColor;
 
-
-
-    //public Servo claw;
+    public Servo basket;
     //public Servo flick;
     //public Servo drop;
-
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public KyranHardwareFullBot(){
-
+    public KyranHardwareFullBot()
+    {
 
     }
 
@@ -69,38 +66,33 @@ public class KyranHardwareFullBot {
         hwMap=ahwMap;
         //webcam = hwMap.get(WebcamName.class, "Webcam");
 
-
         // Define and Initialize Motors
  /*
-   <Motor name="front_left" port="0"/>
-
+<Motor name="front_left" port="0"/>
 <Motor name="front_right" port="1"/>
-
 <Motor name="back_left" port="2"/>
-
 <Motor name="back_right" port="3"/>
  */
-
         front_left  = hwMap.get(DcMotorEx.class, "front_left");
         front_right = hwMap.get(DcMotorEx.class, "front_right");
-        back_left    = hwMap.get(DcMotorEx.class, "back_left");
-        back_right    = hwMap.get(DcMotorEx.class, "back_right");
+        back_left   = hwMap.get(DcMotorEx.class, "back_left");
+        back_right  = hwMap.get(DcMotorEx.class, "back_right");
 
         front_left.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         front_right.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         back_left.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         back_right .setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+
         // Set all motors to zero power
         front_left.setPower(0);
         front_right.setPower(0);
         back_left.setPower(0);
         back_right.setPower(0);
-        PIDFCoefficients p;
+        PIDFCoefficients p; //We are not using this?
 
         intake = hwMap.get(DcMotor.class, "intake");
         arm = hwMap.get(DcMotor.class, "arm");
         spincarousel = hwMap.get(DcMotor.class, "spin_carousel");
-
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -111,18 +103,13 @@ public class KyranHardwareFullBot {
         //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //frontColor = hwMap.get(ColorSensor.class,"frontcolor");
-        //     bottomColor = hwMap.get(ColorSensor.class,"bottomcolor");
-
-
-        /*
-        shooter = hwMap.get(DcMotor.class, "shooter");
-        shooterEx = hwMap.get(DcMotorEx.class, "shooter");
+        //bottomColor = hwMap.get(ColorSensor.class,"bottomcolor");
 
         // Define and initialize ALL installed servos.
-        flick = hwMap.get(Servo.class, "flick");
-        drop = hwMap.get(Servo.class, "drop");
-        claw = hwMap.get(Servo.class, "claw");
-
+   //     flick = hwMap.get(Servo.class, "flick");
+   //     drop = hwMap.get(Servo.class, "drop");
+        basket = hwMap.get(Servo.class, "basket");
+/*
         color_left = hwMap.get(ColorSensor.class, "color_left");
         color_right = hwMap.get(ColorSensor.class, "color_right");
         distance_left = hwMap.get(DistanceSensor.class, "distance_left");
