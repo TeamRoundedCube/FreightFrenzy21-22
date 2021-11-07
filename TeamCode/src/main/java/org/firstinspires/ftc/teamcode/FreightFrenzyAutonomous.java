@@ -86,13 +86,19 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Servo claw;
 
 
-
     //Variable for levels on shipping hub- Vikrant
     //level too generic
+
     int level;
 
+    //Arm Positions:
+    int downPosition = 0;
+    int levelOne = 3585;
+    int levelTwo = 3200;
+    int levelThree = 2700;
+
     private ElapsedTime runtime = new ElapsedTime();
-    HardwareFullBot robot = new HardwareFullBot();
+    KyranHardwareFullBot robot = new KyranHardwareFullBot();
 
 
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
@@ -178,7 +184,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1.0, 16.0/9.0);
+            tfod.setZoom(1.0, 16.0 / 9.0);
         }
 
         /** Wait for the game to begin */
@@ -229,7 +235,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                             double xCoordinate = recognition.getLeft();
 
 
-
                             if (recognition.getLabel() == "duck") {
 
                                 if (xCoordinate < 100) {
@@ -251,7 +256,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                                     telemetry.update();
 
 
-
                                 } else if (updatedRecognitions == null) {
 
                                     level = 3;
@@ -260,7 +264,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
                                     telemetry.update();
-
 
 
                                 }
@@ -276,35 +279,50 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                 }
 
 
-
-
             }
 
             sleep(3000);//- remove later
-            //Drive to and spin the carousel- Vikrant
-            StrafeLeftforTime(1, 4);
-            //SpinCarousel(1, 2.5, 0);
-            level = 1; //remove this
+            //Drive to, line up with, and spin the carousel- Vikrant
+            StrafeLeftforTime(1, 2.5);
+            turnLeft(1, 1);
+            DriveforTime(1, 1);
+            StrafeLeftforTime(1,0.5);
+            StrafeLeftforTime(1,0.5);
+            SpinCarousel(1, 2.5);
+
             //Go to shipping hub and drop block on correct level- Vikrant
             //Picker might not be arm
-            if(level == 1) {
 
+            //Put arm in down position
+            robot.arm.setPower(-0.8);
+            robot.arm.setTargetPosition(downPosition);
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+
+            if (level == 1) {
+
+                DriveforTime(-1, 1);
+                turnRight(1, 1);
                 StrafeRightforTime(1, 5.5);
                 DriveforTime(0.5, 1);
-                //dropBlockLevel1();
+                dropBlockLevel1();
 
             }
-            if(level == 2){
+            if (level == 2) {
 
+                DriveforTime(-1, 1);
+                turnRight(1, 1);
                 StrafeRightforTime(1, 5.5);
                 DriveforTime(0.5, 1);
-                //dropBlockLevel2();
+                dropBlockLevel2();
             }
-            if(level == 3){
+            if (level == 3) {
 
+                DriveforTime(-1, 1);
+                turnRight(1, 1);
                 StrafeRightforTime(1, 5.5);
                 DriveforTime(0.5, 1);
-                //dropBlockLevel3();
+                dropBlockLevel3();
             }
 
             //Move back 2 inches- Vikrant
@@ -314,7 +332,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
             turnRight(1, 2.5);
 
             //Drive to warehouse and park inside warehouse- Vikrant
-            DriveforTime(1,5.5);
+            DriveforTime(1, 5.5);
 
         }
     }
@@ -361,14 +379,42 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
-                robot.front_right.setPower(0);
-                robot.back_right.setPower(0);
                 robot.front_left.setPower(speed);
+                robot.front_right.setPower(-speed);
                 robot.back_left.setPower(speed);
+                robot.back_right.setPower(-speed);
+
+                i++;
+            }
+
+            // Stop all motion;
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
+
+        }
+    }
+
+    public void turnLeft(double speed,
+                         double seconds) {
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            runtime.reset();
+            double milliseconds = seconds * 1000;
+            double i = runtime.milliseconds();
+            while (opModeIsActive() && i < milliseconds) {
+
+                robot.front_left.setPower(-speed);
+                robot.front_right.setPower(speed);
+                robot.back_left.setPower(-speed);
+                robot.back_right.setPower(speed);
 
                 i++;
             }
@@ -391,9 +437,9 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(speed);
                 robot.back_right.setPower(speed);
@@ -420,9 +466,9 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(speed);
                 robot.back_right.setPower(speed);
@@ -449,9 +495,9 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(-speed);
                 robot.back_right.setPower(-speed);
@@ -469,7 +515,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         }
     }
-    /*
+
     public void SpinCarousel(double speed,
                              double seconds) {
 
@@ -477,11 +523,11 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
-                spincarousel.setPower(speed)
+                robot.spincarousel.setPower(speed);
 
                 i++;
             }
@@ -494,50 +540,49 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         }
     }
-    */
+
 
     //Function to drop block on correct level- Vikrant
+
+    public void dropBlockLevel1() {
+
+        if (opModeIsActive()) {
+
+            robot.arm.setPower(-0.25);
+            robot.arm.setTargetPosition(levelOne);
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+
+        }
+
+
+    }
+
+    public void dropBlockLevel2() {
+
+        if (opModeIsActive()) {
+
+            robot.arm.setPower(0.8);
+            robot.arm.setTargetPosition(levelTwo);
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+
+
+        }
+    }
+
+    public void dropBlockLevel3() {
+
+        if (opModeIsActive()) {
+
+            robot.arm.setPower(-0.25);
+            robot.arm.setTargetPosition(levelThree);
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
+        }
+    }
+
     /*
-    public void dropBlockLevel1(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-70);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-
-        }
-
-
-    }
-
-    public void dropBlockLevel2(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-50);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-
-        }
-    }
-
-    public void dropBlockLevel3(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-30);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-        }
-    }
-
     //arm and claw control functions
     public void clawOpen() {
         clawControl(0);
@@ -576,5 +621,5 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     }
-*/
+ */
 }

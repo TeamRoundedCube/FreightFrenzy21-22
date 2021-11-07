@@ -232,7 +232,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
 
         }
     }
-    /*
+
     public void SpinCarousel(double speed,
                              double seconds) {
 
@@ -244,7 +244,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
             double i = runtime.milliseconds();
             while (opModeIsActive() && i < milliseconds ) {
 
-                spincarousel.setPower(speed)
+                robot.spincarousel.setPower(speed);
 
                 i++;
             }
@@ -257,7 +257,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
 
         }
     }
-    */
+
 
     //Function to drop block on correct level- Vikrant
     /*

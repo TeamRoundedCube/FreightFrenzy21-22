@@ -36,8 +36,8 @@ public class KyranHardwareFullBot {
     public DcMotor spincarousel = null;
     public DcMotor arm;
     public DcMotor intake;
+    public WebcamName webcam;
     //public DcMotorEx shooterEx;
-    //public WebcamName webcam;
     //public VoltageSensor vsense;
 
     //public ColorSensor frontColor;
@@ -67,7 +67,7 @@ public class KyranHardwareFullBot {
     public void init(HardwareMap ahwMap) {     //Method
         // Save reference to Hardware map
         hwMap=ahwMap;
-        //webcam = hwMap.get(WebcamName.class, "Webcam");
+        webcam = hwMap.get(WebcamName.class, "Webcam");
 
 
         // Define and Initialize Motors

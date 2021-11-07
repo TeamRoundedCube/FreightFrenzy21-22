@@ -137,13 +137,13 @@ public class MarcsTeleop extends OpMode {
             sleep(1000);
         } else if (gamepad1.dpad_up) {
             //sleep(1000);
-            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//review this line
             robot.arm.setPower(0.8);
             robot.arm.setTargetPosition(levelTwo);
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 //*/
-        robot.spincarousel.setPower(gamepad1.right_trigger);
+        robot.spincarousel.setPower(gamepad1.right_trigger);//right to left direction for carousel
         robot.spincarousel.setPower(-gamepad1.left_trigger);
 
         //X button Override
