@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -29,7 +30,7 @@ public class VikrantHardwareTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        back_left = hardwareMap.dcMotor.get("back_left");
+        /*back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
         front_left = hardwareMap.dcMotor.get("front_left");
         front_right = hardwareMap.dcMotor.get("front_right");
@@ -39,7 +40,16 @@ public class VikrantHardwareTest extends LinearOpMode {
 
         telemetry.addData("Status", "Hardware Initialized");
         telemetry.update();
+        */
+        front_left  = hardwareMap.get(DcMotorEx.class, "front_left");
+        front_right = hardwareMap.get(DcMotorEx.class, "front_right");
+        back_left    = hardwareMap.get(DcMotorEx.class, "back_left");
+        back_right    = hardwareMap.get(DcMotorEx.class, "back_right");
 
+        front_left.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        front_right.setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        back_left.setDirection(DcMotorEx.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        back_right .setDirection(DcMotorEx.Direction.FORWARD);// Set to FORWARD if using AndyMark moto
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
