@@ -33,7 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -45,7 +44,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -60,53 +58,45 @@ import java.util.Set;
 @Autonomous(name = "FreightFrenzyAutonomous", group = "Concept")
 //@Disabled
 public class FreightFrenzyAutonomous extends LinearOpMode {
-    /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
-     * the following 4 detectable objects
-     *  0: Ball,
-     *  1: Cube,
-     *  2: Duck,
-     *  3: Marker (duck location tape marker)
-     *
-     *  Two additional model assets are available which only contain a subset of the objects:
-     *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
-     *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
-     */
+  /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
+   * the following 4 detectable objects
+   *  0: Ball,
+   *  1: Cube,
+   *  2: Duck,
+   *  3: Marker (duck location tape marker)
+   *
+   *  Two additional model assets are available which only contain a subset of the objects:
+   *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
+   *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
+   */
 
     //Drive Motors- Vikrant
-    //DcMotor back_left;
-    //DcMotor back_right;
-    //DcMotor front_left;
-    //DcMotor front_right;
-
+    /*
+    DcMotor back_left;
+    DcMotor back_right;
+    DcMotor front_left;
+    DcMotor front_right;
+    */
     //Carousel Spinning Motor- Vikrant
-    //DcMotor spincarousel;
+    //DcMotor carousel_spinner;
 
     //Arm to drop block on shipping hub
     //DcMotor arm;
     //Servo claw;
 
-
     //Variable for levels on shipping hub- Vikrant
     //level too generic
-
-    int level;
-
-    //Arm Positions:
-    int downPosition = 0;
-    int levelOne = 3585;
-    int levelTwo = 3200;
-    int levelThree = 2700;
+    int level = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
+
     KyranHardwareFullBot robot = new KyranHardwareFullBot();
-
-
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
     private static final String[] LABELS = {
-            "Ball",
-            "Cube",
-            "Duck",
-            "Marker"
+      "Ball",
+      "Cube",
+      "Duck",
+      "Marker"
     };
 
     /*
@@ -129,7 +119,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
-
     /**
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
@@ -138,11 +127,15 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        robot.init(hardwareMap);
+        telemetry.addData(">", "Press Play to start op mode");
+        telemetry.update();
+        waitForStart();
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-
         //HardwareMap for Drive Motors and arm- Vikrant
-        robot.init(hardwareMap);
         /*
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
@@ -151,54 +144,54 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
         //arm = hardwareMap.get(DcMotor.class, "arm");
 
-
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         */
-
-        /*
-        front_left  = hardwareMap.get(DcMotorEx.class, "front_left");
-        front_right = hardwareMap.get(DcMotorEx.class, "front_right");
-        back_left    = hardwareMap.get(DcMotorEx.class, "back_left");
-        back_right    = hardwareMap.get(DcMotorEx.class, "back_right");
-
-        front_left.setDirection(DcMotorEx.Direction.REVERSE);
-        front_right.setDirection(DcMotorEx.Direction.FORWARD);
-        back_left.setDirection(DcMotorEx.Direction.REVERSE);
-        back_right .setDirection(DcMotorEx.Direction.FORWARD);
-        */
-
         initVuforia();
         initTfod();
-
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
          **/
         if (tfod != null) {
             tfod.activate();
-
             // The TensorFlow software will scale the input images from the camera to a lower resolution.
             // This can result in lower detection accuracy at longer distances (> 55cm or 22").
             // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1.0, 16.0 / 9.0);
+            tfod.setZoom(1.0, 16.0/9.0);
         }
-
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
 
         if (opModeIsActive()) {
-            while (opModeIsActive()) {
+            //Step 1- Drive to carousel
+           // DriveforTime(.55, 4.5);
+           // sleep(1000);
+            //Step 2- Spin carousel
+           // SpinCarousel(-.6,53);
+           // sleep(1000);
+            //Step 3- Strafe right to move away from carousel
+           // StrafeRightforTime(.5, .5);
+            //sleep(1000);
+            //Step 4- Turn right to line up with wall
+           // turnRight(1, 2.5);
+            //sleep(100);
+            //Step 5- Strafe right to line up with the bar codes
+           // StrafeRightforTime(.5, 1);
+            //sleep(1000);
 
-                //Move forward 2 inches- Vikrant
-                //DriveforTime(0.5, 0.5, 0);
+            //Step 6- detect the position of the duck/teamshipping element
+            //while (opModeIsActive()) {
 
-                if (tfod != null) {
+            DriveforTime(1, .35);
+            sleep(1000);
+            while (level == 0) {
+                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -208,7 +201,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                         // step through the list of recognitions and display boundary info.
                         int i = 0;
                         for (Recognition recognition : updatedRecognitions) {
-
                             telemetry.addData("Entire Image Width", recognition.getImageWidth());
                             telemetry.addData("Entire Image Height", recognition.getImageHeight());
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
@@ -218,125 +210,149 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
                                     recognition.getRight(), recognition.getBottom());
                             telemetry.addData("Image Height", recognition.getHeight());
                             telemetry.addData("Image Width", recognition.getWidth());
-
                             i++;
-
-
                         }
                     }
-                    telemetry.update();
-                    //telemetry.clearAll();
-
-                    //if Statement to determine level for shipping hub and display level on driver station- Vikrant
-                    if (updatedRecognitions != null) {
-
-                        for (Recognition recognition : updatedRecognitions) {
-
-                            double xCoordinate = recognition.getLeft();
-
-
-                            if (recognition.getLabel() == "duck") {
-
-                                if (xCoordinate < 100) {
-
-                                    level = 1;
-
-                                    telemetry.addData("Level", level);
-
-
-                                    telemetry.update();
-
-
-                                } else if (xCoordinate > 250 && xCoordinate < 400) {
-
-                                    level = 2;
-                                    telemetry.addData("Level", level);
-
-
-                                    telemetry.update();
-
-
-                                } else if (updatedRecognitions == null) {
-
-                                    level = 3;
-
-                                    telemetry.addData("Level", level);
-
-
-                                    telemetry.update();
-
-
-                                }
-
-
-                            }
-
-
-                        }
-
-                    }
-
-                }
-
-
+                     telemetry.update();
+                      //telemetry.clearAll();
+                      //if Statement to determine level for shipping hub and display level on driver station- Vikrant
+                      if (updatedRecognitions != null) {
+                          for (Recognition recognition : updatedRecognitions) {
+                              double xCoordinate = recognition.getLeft();
+                              telemetry.addData("Item", recognition.getLabel());
+                              telemetry.addData("Duck-X", xCoordinate);
+                              telemetry.update();
+                              if (recognition.getLabel() == "Duck") {
+                                  telemetry.addData("X-coordinate", xCoordinate);
+                                  if (xCoordinate < 250) {
+                                      level = 1;
+                                      telemetry.addData("Level", level);
+                                      telemetry.update();
+                                      break;
+                                  } else if (xCoordinate > 250) {
+                                      level = 2;
+                                      telemetry.addData("Level", level);
+                                      telemetry.update();
+                                      break;
+                                  } else {
+                                      level = 3;
+                                      telemetry.addData("Level", level);
+                                      telemetry.update();
+                                      break;
+                                  }
+                              }
+                              else if (recognition.getLabel() == "Marker"){
+                                  level = 3;
+                                  telemetry.addData("Level", level);
+                                  telemetry.update();
+                                  break;
+                              }
+                          }
+                      }
+                      // If for some reason, the robot does not go forward enough and it does not recognize any items
+                      // and level is not set yet
+                      // and if it is past seconds
+                      // then default to level 3
+                     else if (updatedRecognitions == null && level == 0 && runtime.seconds() > 5){
+                          level = 3;
+                          telemetry.addData("Level", level);
+                          telemetry.update();
+                          break;
+                      }
+                 }
             }
+            telemetry.update();
 
-            sleep(3000);//- remove later
-            //Drive to, line up with, and spin the carousel- Vikrant
-            StrafeLeftforTime(1, 2.5);
-            turnLeft(1, 1);
-            DriveforTime(1, 1);
-            StrafeLeftforTime(1,0.5);
-            StrafeLeftforTime(1,0.5);
-            SpinCarousel(1, 2.5);
-
-            //Go to shipping hub and drop block on correct level- Vikrant
-            //Picker might not be arm
-
-            //Put arm in down position
-            robot.arm.setPower(-0.8);
-            robot.arm.setTargetPosition(downPosition);
-            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1000);
-
+            //Step 7- Strafe right to line up with the shipping hub
+            StrafeRightforTime(.75, 5);
+            //sleep(1000);
+            //Step 8- adjust arm based on level
+            //Define levels
+            int levelOne = 2950;
+            int levelTwo = 2455;
+            int levelThree = 1950;
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             if (level == 1) {
-
-                DriveforTime(-1, 1);
-                turnRight(1, 1);
-                StrafeRightforTime(1, 5.5);
-                DriveforTime(0.5, 1);
-                dropBlockLevel1();
-
+                robot.arm.setPower(-0.35);
+                robot.arm.setTargetPosition(levelOne);// Level 1
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
+                DriveforTime(.5, 1.05);
+                //sleep(1000);
+                robot.basket.setPosition(0.3);
+                sleep(1000);
+                robot.basket.setPosition(0.18);
+                sleep(1000);
+                DriveforTime(-.5, 1.05);
+                //sleep(1000);
+                robot.arm.setTargetPosition(500);
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
+            } else if (level == 2) {
+                robot.arm.setPower(-0.35);
+                robot.arm.setTargetPosition(levelTwo);//Level 2
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
+                DriveforTime(.5, 1.25);
+                //sleep(1000);
+                robot.basket.setPosition(0.3);
+                sleep(1000);
+                robot.basket.setPosition(0.18);
+                sleep(1000);
+                DriveforTime(-.5, 1.25);
+                //sleep(1000);
+                robot.arm.setTargetPosition(500);
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
+            } else if (level == 3) {
+                robot.arm.setPower(-0.35);
+                robot.arm.setTargetPosition(levelThree);//Level 3
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
+                DriveforTime(.5, 1.45);
+                //sleep(1000);
+                robot.basket.setPosition(0.3);
+                sleep(1000);
+                robot.basket.setPosition(0.18);
+                sleep(1000);
+                DriveforTime(-.5, 1.45);
+                //sleep(1000);
+                robot.arm.setTargetPosition(500);
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                sleep(3000);
             }
-            if (level == 2) {
-
-                DriveforTime(-1, 1);
-                turnRight(1, 1);
-                StrafeRightforTime(1, 5.5);
-                DriveforTime(0.5, 1);
-                dropBlockLevel2();
+            // strafeleft to original position
+            StrafeLeftforTime(.5, 7);
+            sleep(1000);
+            StrafeLeftforTime(.25, 1);
+            sleep(1000);
+            //Drive back to original starting position
+            //DriveforTime(.5, 1);
+            //Turn Left
+            turnLeft(.25,6);
+            sleep(1000);
+            //Drive forward to reach the carousel
+            //DriveforTime(.55, 4.5);
+            //sleep(1000);
+            //Step 2.5: Spin Carousel with max power for 1 sec
+            //SpinCarousel(-.6,53);
+            //sleep(1000);
+            //Step 3: Strafe right away from carousel
+            //StrafeRightforTime(1, 2);
+            //sleep(1000);
+            //Step 4: Drive out of storage unit
+            //DriveforTime(-1, 4);
+            //sleep(1000);
+            //Step 4: Turn left to line up with wall
+            //turnLeft(1, .3);
+            //sleep(1000);
+            //Step 5: Strafe left to line up with wall
+            //StrafeLeftforTime(1, 9);
+            //sleep(1000);
+            //Step 5: Drive Backwards To Warehouse
+            //DriveforTime(-1,13.5);
+                }
             }
-            if (level == 3) {
-
-                DriveforTime(-1, 1);
-                turnRight(1, 1);
-                StrafeRightforTime(1, 5.5);
-                DriveforTime(0.5, 1);
-                dropBlockLevel3();
-            }
-
-            //Move back 2 inches- Vikrant
-            DriveforTime(-1, 0.25);
-
-            //Turn right to park in warehouse- Vikrant
-            turnRight(1, 2.5);
-
-            //Drive to warehouse and park inside warehouse- Vikrant
-            DriveforTime(1, 5.5);
-
-        }
-    }
-
 
     /**
      * Initialize the Vuforia localization engine.
@@ -348,7 +364,7 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        //parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam");
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -361,55 +377,54 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
-        tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 320;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+       tfodParameters.minResultConfidence = 0.8f;
+       tfodParameters.isModelTensorFlow2 = true;
+       tfodParameters.inputSize = 320;
+       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 
     //Function to make robot turn right
 
-    public void turnRight(double speed,
-                          double seconds) {
+        public void turnRight(double speed,
+                              double seconds) {
 
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
+            // Ensure that the opmode is still active
+            if (opModeIsActive()) {
 
-            runtime.reset();
-            double milliseconds = seconds * 1000;
-            double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+                runtime.reset();
+                double milliseconds = seconds*1000;
+                double i = runtime.milliseconds();
+                while (opModeIsActive() && i < milliseconds ) {
 
-                robot.front_left.setPower(speed);
-                robot.front_right.setPower(-speed);
-                robot.back_left.setPower(speed);
-                robot.back_right.setPower(-speed);
+                    robot.front_right.setPower(0);
+                    robot.back_right.setPower(0);
+                    robot.front_left.setPower(speed);
+                    robot.back_left.setPower(speed);
 
-                i++;
+                    i++;
+                }
+
+                // Stop all motion;
+                robot.front_right.setPower(0);
+                robot.back_right.setPower(0);
+                robot.front_left.setPower(0);
+                robot.back_left.setPower(0);
+
             }
-
-            // Stop all motion;
-            robot.front_right.setPower(0);
-            robot.back_right.setPower(0);
-            robot.front_left.setPower(0);
-            robot.back_left.setPower(0);
-
         }
-    }
-
     public void turnLeft(double speed,
                          double seconds) {
-
+        //For this method it takes 5 seconds to turn 90 degrees-Prabhav-10/17/2021
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds * 1000;
+            double milliseconds = seconds*1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+            while (opModeIsActive() && i < milliseconds ) {
 
                 robot.front_left.setPower(-speed);
                 robot.front_right.setPower(speed);
@@ -428,7 +443,6 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         }
     }
 
-
     //Drive forward for a certain number of seconds
     public void DriveforTime(double speed,
                              double seconds) {
@@ -437,9 +451,9 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds * 1000;
+            double milliseconds = seconds*1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+            while (opModeIsActive() && i < milliseconds ) {
 
                 robot.front_right.setPower(speed);
                 robot.back_right.setPower(speed);
@@ -466,14 +480,14 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds * 1000;
+            double milliseconds = seconds*1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+            while (opModeIsActive() && i < milliseconds ) {
 
                 robot.front_right.setPower(speed);
-                robot.back_right.setPower(speed);
+                robot.back_right.setPower(-speed);
                 robot.front_left.setPower(-speed);
-                robot.back_left.setPower(-speed);
+                robot.back_left.setPower(speed);
 
                 i++;
             }
@@ -495,14 +509,14 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds * 1000;
+            double milliseconds = seconds*1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+            while (opModeIsActive() && i < milliseconds ) {
 
                 robot.front_right.setPower(-speed);
-                robot.back_right.setPower(-speed);
+                robot.back_right.setPower(speed);
                 robot.front_left.setPower(speed);
-                robot.back_left.setPower(speed);
+                robot.back_left.setPower(-speed);
 
                 i++;
             }
@@ -523,14 +537,80 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds * 1000;
+            double milliseconds = seconds*1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds) {
+            while (opModeIsActive() && i < milliseconds ) {
 
                 robot.spincarousel.setPower(speed);
 
+
                 i++;
             }
+
+            // Stop all motion;
+            robot.spincarousel.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_left.setPower(0);
+            robot.back_left.setPower(0);
+
+        }
+    }
+
+    public void driveInches(double speed, double inches) {
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            int FRtarget = (int) (-50*inches);
+            int FLtarget = (int) (-40*inches);
+            int BRtarget = (int) (-50*inches);
+            int BLtarget = (int) (-30*inches);
+
+            robot.front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            runtime.reset();
+
+            robot.front_right.setTargetPosition(FRtarget);
+            robot.front_left.setTargetPosition(FLtarget);
+            robot.back_right.setTargetPosition(BRtarget);
+            robot.back_left.setTargetPosition(BLtarget);
+
+            // set motors to run to target encoder position and stop with brakes on.
+            robot.front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            robot.front_right.setPower(-speed);
+            robot.back_right.setPower(-speed);
+            robot.front_left.setPower(-speed);
+            robot.back_left.setPower(-speed);
+/*
+            while (opModeIsActive() && robot.front_left.isBusy())   //leftMotor.getCurrentPosition() < leftMotor.getTargetPosition())
+            {
+               // telemetry.addData("encoder-fwd-left", leftMotor.getCurrentPosition() + "  busy=" + leftMotor.isBusy());
+               // telemetry.addData("encoder-fwd-right", rightMotor.getCurrentPosition() + "  busy=" + rightMotor.isBusy());
+                telemetry.update();
+                idle();
+            }
+*/
+/*
+            while (opModeIsActive() &&
+                    (FRtarget < robot.front_right.getCurrentPosition() ||
+                    FLtarget < robot.front_left.getCurrentPosition() ||
+                    BRtarget < robot.back_right.getCurrentPosition() ||
+                    BLtarget < robot.back_left.getCurrentPosition())) {
+
+                robot.front_right.setPower(-speed);
+                robot.back_right.setPower(-speed);
+                robot.front_left.setPower(-speed);
+                robot.back_left.setPower(-speed);
+
+            }*/
 
             // Stop all motion;
             robot.front_right.setPower(0);
@@ -543,46 +623,47 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
 
     //Function to drop block on correct level- Vikrant
-
-    public void dropBlockLevel1() {
-
-        if (opModeIsActive()) {
-
-            robot.arm.setPower(-0.25);
-            robot.arm.setTargetPosition(levelOne);
-            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1000);
-
-        }
-
-
-    }
-
-    public void dropBlockLevel2() {
-
-        if (opModeIsActive()) {
-
-            robot.arm.setPower(0.8);
-            robot.arm.setTargetPosition(levelTwo);
-            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1000);
-
-
-        }
-    }
-
-    public void dropBlockLevel3() {
-
-        if (opModeIsActive()) {
-
-            robot.arm.setPower(-0.25);
-            robot.arm.setTargetPosition(levelThree);
-            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1000);
-        }
-    }
-
     /*
+    public void dropBlockLevel1(){
+
+        if(opModeIsActive()) {
+
+            arm.setPower(0.5);
+            moveArmDown(-70);
+            clawOpen();
+            clawClose();
+            moveArmUp(0);
+
+        }
+
+
+    }
+
+    public void dropBlockLevel2(){
+
+        if(opModeIsActive()) {
+
+            arm.setPower(0.5);
+            moveArmDown(-50);
+            clawOpen();
+            clawClose();
+            moveArmUp(0);
+
+        }
+    }
+
+    public void dropBlockLevel3(){
+
+        if(opModeIsActive()) {
+
+            arm.setPower(0.5);
+            moveArmDown(-30);
+            clawOpen();
+            clawClose();
+            moveArmUp(0);
+        }
+    }
+
     //arm and claw control functions
     public void clawOpen() {
         clawControl(0);
@@ -599,8 +680,8 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
     //Function that makes the arm move downwards
     public void moveArmDown(double angle) {
 
-        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.arm.setPower(0.6);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setPower(0.6);
         sleep(600);
 
         arm.setPower(0);
@@ -612,14 +693,14 @@ public class FreightFrenzyAutonomous extends LinearOpMode {
 
     //Function that moves arm up
     public void moveArmUp(double angle) {
-        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.arm.setPower(-0.8);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setPower(-0.8);
         sleep(500);
 
-        robot.arm.setPower(0);
+        arm.setPower(0);
 
 
 
     }
- */
+*/
 }
