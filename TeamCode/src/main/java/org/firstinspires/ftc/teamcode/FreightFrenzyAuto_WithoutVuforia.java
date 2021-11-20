@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -56,7 +57,7 @@ import java.util.List;
 public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //HardwareFullBot robot = new HardwareFullBot();
-    KyranHardwareFullBot robot = new KyranHardwareFullBot();
+    KyranHardwareFullBotBackup robot = new KyranHardwareFullBotBackup();
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
     private static final String[] LABELS = {
             "Ball",
@@ -64,6 +65,15 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
             "Duck",
             "Marker"
     };
+    static final double COUNTS_PER_MOTOR_REV = 400;    // 537 (Original)
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 3.9;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double LEFT_FRONT_COEFF = 1.0;
+    static final double LEFT_BACK_COEFF = 1.0;
+    static final double RIGHT_FRONT_COEFF = 1.0;
+    static final double RIGHT_BACK_COEFF = 1.0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -183,16 +193,22 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
   /*              StrafeLeftforTime(1, 2);
                 turnLeft(.25,4);
   */              //Drive forward to reach the carousel
-                DriveforTime(.55, 4.5);
+
+            DriveforTime(.55, 4.5);
+           // driveForward(0.3,12);
+
                 sleep(1000);
                 //Step 2.5: Spin Carousel with max power for 1 sec
-                SpinCarousel(-.6,53);
+                SpinCarousel(-.6,200);
+            telemetry.addData("done", "spinning");
+            telemetry.update();
                 sleep(1000);
                 //Step 3: Strafe right away from carousel
                 StrafeRightforTime(1, 7.5);
                 sleep(1000);
                 //Step 4: Drive out of storage unit
                 DriveforTime(-1, 4);
+             //   driveReverse(0.3,45);
                 sleep(1000);
                 //Step 4: Turn left to line up with wall
                 turnLeft(1, .3);
@@ -202,6 +218,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
                 sleep(1000);
                 //Step 5: Drive Backwards To Warehouse
                 DriveforTime(-1,13.5);
+              //  driveReverse(0.3,5);
                 //turnRight(1, 10);
                 //sleep(1000);
                 //Step 6: Drive to warehouse and park inside warehouse- Vikrant
@@ -369,6 +386,7 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
             }
 
             // Stop all motion;
+            robot.spincarousel.setPower(0);
             robot.front_right.setPower(0);
             robot.back_right.setPower(0);
             robot.front_left.setPower(0);
@@ -376,6 +394,208 @@ public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
 
         }
     }
+
+
+    public void driveReverse (double speed, double distance) {
+        encoderDriveReverse(speed, distance, distance, 30);
+
+    }
+
+    public void driveForward(double speed, double distance) {
+        encoderDrive(speed, distance, distance, 30);
+    }
+
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newbackLeftTarget;
+        int newbackRightTarget;
+        int newfrontLeftTarget;
+        int newfrontRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newbackLeftTarget = robot.back_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newbackRightTarget = robot.back_right.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newfrontLeftTarget = robot.front_left.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newfrontRightTarget = robot.front_right.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+
+            robot.front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            robot.back_left.setTargetPosition(newbackLeftTarget);
+            robot.back_right.setTargetPosition(newbackRightTarget);
+            robot.front_right.setTargetPosition(newfrontRightTarget);
+            robot.front_left.setTargetPosition(newfrontLeftTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // reset the timeout time and start motion.
+
+            runtime.reset();
+            robot.back_right.setPower(Math.abs(speed));
+            robot.back_left.setPower(Math.abs(speed));
+            robot.front_left.setPower(Math.abs(speed));
+            robot.front_right.setPower(Math.abs(speed));
+
+/*
+            robot.back_right.setPower(Math.abs(speed));
+            robot.back_left.setPower(Math.abs(speed));
+            robot.front_left.setPower(Math.abs(speed));
+            robot.front_right.setPower(Math.abs(speed));
+*/
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+
+            while (opModeIsActive() && (robot.back_left.getCurrentPosition() < newbackLeftTarget) && (robot.back_right.getCurrentPosition() < newbackRightTarget) &&
+                    (runtime.seconds() < timeoutS))
+
+         /*                   while (opModeIsActive()
+                                    && robot.back_left.isBusy()
+                                    && robot.back_right.isBusy()
+                                    && robot.front_right.isBusy()
+                                    && robot.front_left.isBusy()
+                                    &&  runtime.seconds() < timeoutS)*/
+            {
+                //Provides current position and updates it every time it changes
+                telemetry.addData("Curr Velocity at time ", "backleft(%.2f), " +
+                                "backright (%.2f)",
+                        robot.back_left.getVelocity(),
+                        robot.back_right.getVelocity());
+                //sleep(250);
+                telemetry.update();
+                idle();
+            }
+/*
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS)
+                    &&
+                    (robot.front_right.isBusy())
+            ) {
+
+
+                telemetry.addData("target", "Running to %7d :%7d   :%7d  :%7d", newbackLeftTarget
+                        , newbackRightTarget
+                        , newfrontLeftTarget
+                        , newfrontRightTarget);
+                telemetry.addData("CurrentPositon", "Running at %7d :%7d  :%7d  :%7d",
+                        robot.front_left.getCurrentPosition(),
+                        robot.front_right.getCurrentPosition(),
+                        robot.back_left.getCurrentPosition(),
+                        robot.back_right.getCurrentPosition());
+                telemetry.update();
+
+            }
+*/
+            // Stop all motion;
+            robot.front_left.setPower(0);
+            robot.back_right.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_left.setPower(0);
+        }
+    }
+
+    public void encoderDriveReverse(double speed,
+                                    double leftInches, double rightInches,
+                                    double timeoutS) {
+        int newbackLeftTarget;
+        int newbackRightTarget;
+        int newfrontLeftTarget;
+        int newfrontRightTarget;
+
+        telemetry.addData("DriveReverse", "Running at %7d :%7d  :%7d  :%7d",
+                robot.front_left.getCurrentPosition(),
+                robot.front_right.getCurrentPosition(),
+                robot.back_left.getCurrentPosition(),
+                robot.back_right.getCurrentPosition());
+        telemetry.update();
+        // Determine new target position, and pass to motor controller
+        newbackLeftTarget = robot.back_left.getCurrentPosition() - (int) (leftInches * COUNTS_PER_INCH);
+        newbackRightTarget = robot.back_right.getCurrentPosition() - (int) (rightInches * COUNTS_PER_INCH);
+        newfrontLeftTarget = robot.front_left.getCurrentPosition() - (int) (leftInches * COUNTS_PER_INCH);
+        newfrontRightTarget = robot.front_right.getCurrentPosition() - (int) (rightInches * COUNTS_PER_INCH);
+
+        robot.front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        robot.back_left.setTargetPosition(newbackLeftTarget);
+        robot.back_right.setTargetPosition(newbackRightTarget);
+        robot.front_right.setTargetPosition(newfrontRightTarget);
+        robot.front_left.setTargetPosition(newfrontLeftTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.front_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.front_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.back_left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.back_right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // reset the timeout time and start motion.
+        runtime.reset();
+
+
+
+        while (opModeIsActive()
+                && (robot.front_left.getCurrentPosition() > newfrontLeftTarget)
+                && (robot.front_right.getCurrentPosition() > newfrontRightTarget)
+                // && (robot.back_right.getCurrentPosition() > newbackRightTarget)
+                // && (robot.back_left.getCurrentPosition() > newbackLeftTarget)
+                && (runtime.seconds() < timeoutS)) {
+
+            robot.back_right.setPower(-speed * RIGHT_BACK_COEFF);
+            robot.front_right.setPower(-speed * RIGHT_FRONT_COEFF);
+            robot.back_left.setPower(-speed * LEFT_BACK_COEFF);
+            robot.front_left.setPower(-speed * LEFT_FRONT_COEFF);
+
+        }
+
+
+/*
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS)
+                &&
+                (robot.front_right.isBusy())
+                &&
+                (robot.front_left.isBusy())
+                &&
+                (robot.back_right.isBusy())
+                &&
+                (robot.back_left.isBusy())
+        ) {
+
+
+            telemetry.addData("target", "Running to %7d :%7d   :%7d  :%7d", newbackLeftTarget
+                    , newbackRightTarget
+                    , newfrontLeftTarget
+                    , newfrontRightTarget);
+            telemetry.addData("CurrentPositon", "Running at %7d :%7d  :%7d  :%7d",
+                    robot.front_left.getCurrentPosition(),
+                    robot.front_right.getCurrentPosition(),
+                    robot.back_left.getCurrentPosition(),
+                    robot.back_right.getCurrentPosition());
+            telemetry.update();
+
+        }*/
+        robot.front_right.setPower(0);    // Stop all motion;
+        robot.back_right.setPower(0);
+        robot.front_left.setPower(0);
+        robot.back_left.setPower(0);
+
+
+    }
+
         /**
          * Initialize the Vuforia localization engine.
          */

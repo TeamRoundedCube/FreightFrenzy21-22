@@ -1,12 +1,12 @@
-//  ____          ____  ____           ____   ______________                     ______            ____        ____
-// |    |       /    /  \   \        /    /  |     _______   \                 /        \         |     \     |   |
-// |    |     /    /     \   \     /    /    |   |        |   \              /    / \    \        |      \    |   |
-// |    |   /    /        \   \  /    /      |   |_______|    /            /    /    \    \       |       \   |   |
-// |    | /    /           \   \/   /        |     ___      _/           /    /       \    \      |    |\  \  |   |
-// |    | \    \            |     |          |    |   \    \           /    /__________\    \     |    | \  \ |   |
-// |    |  \    \           |     |          |    |    \    \        /    /_____________\    \    |    |  \       |
-// |    |   \    \          |     |          |    |     \    \     /    /                \    \   |    |   \      |
-// |____|    \____\         |_____|          |____|      \____\  /____/                   \____\  |____|    \_____|
+//  ____      ____      ____           ____   ______________              _______            ____        ___
+// |    |    /    /     \   \        /    /  |     _______   \          /         \         |     \     |   |
+// |    |   /    /       \   \     /    /    |   |        |   \        /    / \    \        |      \    |   |
+// |    |  /    /         \   \  /    /      |   |_______|    /       /    /   \    \       |       \   |   |
+// |    | /    /           \   \/   /        |     ___      _/       /    /     \    \      |    |\  \  |   |
+// |    | \    \            |     |          |    |   \    \        /    /_______\    \     |    | \  \ |   |
+// |    |  \    \           |     |          |    |    \    \      /    /_________\    \    |    |  \       |
+// |    |   \    \          |     |          |    |     \    \    /    /           \    \   |    |   \      |
+// |____|    \____\         |_____|          |____|      \____\  /____/             \____\  |____|    \_____|
 
 
 package org.firstinspires.ftc.teamcode;
@@ -37,7 +37,7 @@ public class KyranHardwareFullBot {
     public DcMotor arm;
     public DcMotor intake;
     //public DcMotorEx shooterEx;
-    //public WebcamName webcam;
+    public WebcamName webcam;
     //public VoltageSensor vsense;
 
     //public ColorSensor frontColor;
@@ -64,7 +64,7 @@ public class KyranHardwareFullBot {
     public void init(HardwareMap ahwMap) {     //Method
         // Save reference to Hardware map
         hwMap=ahwMap;
-        //webcam = hwMap.get(WebcamName.class, "Webcam");
+        webcam = hwMap.get(WebcamName.class, "Webcam");
 
         // Define and Initialize Motors
  /*
@@ -96,12 +96,16 @@ public class KyranHardwareFullBot {
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        front_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        front_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        back_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        back_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        front_left.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        front_right.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        back_left.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        back_right.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        front_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //frontColor = hwMap.get(ColorSensor.class,"frontcolor");
         //bottomColor = hwMap.get(ColorSensor.class,"bottomcolor");
 
