@@ -52,9 +52,9 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-
+/* Test Program for Team Shipping Element Detention*/
 public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
-  /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
+  /* Venkat 11-20-21 Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
    * the following 4 detectable objects
    *  0: Ball,
    *  1: Cube,
