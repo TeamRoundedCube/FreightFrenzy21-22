@@ -11,14 +11,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -28,7 +25,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 //Created by Kyran 10/16/2021 @ 3:00pm
 //Purpose: Used For Marc to test Teleop ("MarcsTeleop") on the Robot
 
-public class KyranHardwareFullBot {
+public class FFHardwareFullBot {
 
     //Objects
     public DcMotorEx front_left  =null;
@@ -57,7 +54,7 @@ public class KyranHardwareFullBot {
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public KyranHardwareFullBot()
+    public FFHardwareFullBot()
     {
 
     }

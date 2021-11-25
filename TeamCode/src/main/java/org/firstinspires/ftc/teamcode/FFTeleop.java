@@ -13,28 +13,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-
-import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 //Created by Kyran 10/16/2021 @ 3:05pm
 //Purpose: Marc will use to test the new competition robot
 
 
-@TeleOp(name = "MarcsTeleop")
-public class MarcsTeleop extends OpMode {
+@TeleOp(name = "FFTeleop")
+public class FFTeleop extends OpMode {
 
-    KyranHardwareFullBot robot = new KyranHardwareFullBot();
+    FFHardwareFullBot robot = new FFHardwareFullBot();
     boolean shooting = false;
     boolean autoAim = false;
     boolean squared = false;
@@ -79,13 +67,13 @@ public class MarcsTeleop extends OpMode {
         float strafePower = gamepad1.left_stick_x; //Strafe
         //float diagonalPoser = ?; //Diagonal
         // /*
-        telemetry.addData("leftx:", java.lang.Math.abs(gamepad1.left_stick_x));
-        telemetry.addData("lefty:", java.lang.Math.abs(gamepad1.left_stick_y));
+        telemetry.addData("leftx:", Math.abs(gamepad1.left_stick_x));
+        telemetry.addData("lefty:", Math.abs(gamepad1.left_stick_y));
         telemetry.update();
         // */
         // Diagonal
-        boolean diagonalY = (java.lang.Math.abs(gamepad1.left_stick_y) > 0.3 && java.lang.Math.abs(gamepad1.left_stick_y) < 0.8);
-        boolean diagonalX = (java.lang.Math.abs(gamepad1.left_stick_x) > 0.3 && java.lang.Math.abs(gamepad1.left_stick_x) < 0.8);
+        boolean diagonalY = (Math.abs(gamepad1.left_stick_y) > 0.3 && Math.abs(gamepad1.left_stick_y) < 0.8);
+        boolean diagonalX = (Math.abs(gamepad1.left_stick_x) > 0.3 && Math.abs(gamepad1.left_stick_x) < 0.8);
         boolean diagonal = diagonalY && diagonalX;
 
 
