@@ -103,6 +103,13 @@ public class FFAuto extends LinearOpMode {
     @Override
     public void runOpMode()
     {
+        int downPosition = 0;
+        int drivingPosition = 350;
+        int levelOne = 3300;
+        int levelTwo = 2900;
+        int levelThree = 2300;
+        double armSpeed = 0.75;
+
         //HardwareMap for Drive Motors and arm- Vikrant
         robot.init(hardwareMap);
         telemetry.addData(">", "Press Play to start op mode");
@@ -197,21 +204,17 @@ public class FFAuto extends LinearOpMode {
                 turnRight(.5,.575);
                 //sleep(1000);
                 robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.arm.setPower(-0.35);
-                robot.arm.setTargetPosition(1900);//Level 3
-                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sleep(4000);
+                moveArm(armSpeed, levelThree);
+                //sleep(4000);
                 driveForward(.25, 21);
-                sleep(2000);
-                robot.basket.setPosition(0.3);
+                sleep(1000);
+                robot.basket.setPosition(0.35);
                 sleep(1000);
                 robot.basket.setPosition(0.18);
                 sleep(1000);
+                moveArm(armSpeed, drivingPosition);
                 driveReverse(.25, 21);
                 //sleep(1000);
-                robot.arm.setTargetPosition(500);
-                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sleep(3000);
                 turnLeft(.5,.6);
                 //sleep(1000);
                 StrafeLeftforTime(.25,.5);
@@ -549,9 +552,6 @@ public class FFAuto extends LinearOpMode {
 
         // reset the timeout time and start motion.
         runtime.reset();
-
-
-
         while (opModeIsActive()
                 && (robot.front_left.getCurrentPosition() > newfrontLeftTarget)
                 && (robot.front_right.getCurrentPosition() > newfrontRightTarget)
@@ -634,86 +634,13 @@ public class FFAuto extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 */
-
-        //Function to drop block on correct level- Vikrant
-    /*
-    public void dropBlockLevel1(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-70);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-
+    public void moveArm(double speed, int position) {
+        robot.arm.setPower(speed);
+        robot.arm.setTargetPosition(position);
+        robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(robot.arm.isBusy()) {
+            sleep(1);
         }
-
-
-    }
-
-    public void dropBlockLevel2(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-50);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-
-        }
-    }
-
-    public void dropBlockLevel3(){
-
-        if(opModeIsActive()) {
-
-            robot.arm.setPower(0.5);
-            moveArmDown(-30);
-            clawOpen();
-            clawClose();
-            moveArmUp(0);
-        }
-    }
-
-    //arm and claw control functions
-    public void clawOpen() {
-        clawControl(0);
-    }
-    public void clawClose() {
-        clawControl(1);
-    }
-    public void clawControl(double position) {
-
-        claw.setPosition(position);
-        sleep(2000);
-
-    }
-    //Function that makes the arm move downwards
-    public void moveArmDown(double angle) {
-
-        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.arm.setPower(0.6);
-        sleep(600);
-
-        arm.setPower(0);
-
-
-
-
-    }
-
-    //Function that moves arm up
-    public void moveArmUp(double angle) {
-        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.arm.setPower(-0.8);
-        sleep(500);
-
         robot.arm.setPower(0);
-
-
-
     }
-*/
 }
