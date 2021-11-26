@@ -35,8 +35,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import java.util.List;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -99,143 +103,80 @@ public class FFAuto extends LinearOpMode {
     private TFObjectDetector tfod;
     //Variable for levels on shipping hub- Vikrant
     //level too generic
-    int level;
+    int level = 0;
+
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         int downPosition = 0;
         int drivingPosition = 350;
         int levelOne = 3300;
         int levelTwo = 2900;
         int levelThree = 2300;
-        double armSpeed = 0.75;
+        double armSpeed = 0.25;
 
         //HardwareMap for Drive Motors and arm- Vikrant
         robot.init(hardwareMap);
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+        initVuforia();
+        initTfod();
+        while (opModeIsActive() == false) {
+            detectObject();
+        }
         waitForStart();
 
-        if (opModeIsActive())
-        {
-/*            initVuforia();
-            initTfod();
-
-            *//**
-             * Activate TensorFlow Object Detection before we wait for the start command.
-             * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-             **//*
-            if (tfod != null) {
-                tfod.activate();
-
-                // The TensorFlow software will scale the input images from the camera to a lower resolution.
-                // This can result in lower detection accuracy at longer distances (> 55cm or 22").
-                // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
-                // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
-                // should be set to the value of the images used to create the TensorFlow Object Detection model
-                // (typically 16/9).
-                tfod.setZoom(1.0, 16.0/9.0);
-            }
-
-            *//** Wait for the game to begin *//*
-            telemetry.addData(">", "Press Play to start op mode");
+        if (opModeIsActive()) {
+            telemetry.clear();
+            telemetry.addData("Level at start:", level);
             telemetry.update();
-            waitForStart();
-            //Step 1: scan the duck, set level
-            if (opModeIsActive()) {
-                while (opModeIsActive()) {
-                    if (tfod != null) {
-                        // getUpdatedRecognitions() will return null if no new information is available since
-                        // the last time that call was made.
-                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                        if (updatedRecognitions != null) {
-                            telemetry.addData("# Object Detected", updatedRecognitions.size());
-                            // step through the list of recognitions and display boundary info.
-                            int i = 0;
-                            for (Recognition recognition : updatedRecognitions) {
-
-                                telemetry.addData("Entire Image Width", recognition.getImageWidth());
-                                telemetry.addData("Entire Image Height", recognition.getImageHeight());
-                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                        recognition.getLeft(), recognition.getTop());
-                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                        recognition.getRight(), recognition.getBottom());
-                                telemetry.addData("Image Height", recognition.getHeight());
-                                telemetry.addData("Image Width", recognition.getWidth());
-                                i++;
-                            }
-                        }
-                        telemetry.update();
-                        //telemetry.clearAll();
-                        //if Statement to determine level for shipping hub and display level on driver station- Vikrant
-                        if (updatedRecognitions != null) {
-                            for (Recognition recognition : updatedRecognitions) {
-                                double xCoordinate = recognition.getLeft();
-                                if (recognition.getLabel() == "duck") {
-                                    if (xCoordinate < 100) {
-                                        level = 1;
-                                        telemetry.addData("Level", level);
-                                        telemetry.update();
-                                    } else if (xCoordinate > 250 && xCoordinate < 400) {
-                                        level = 2;
-                                        telemetry.addData("Level", level);
-                                        telemetry.update();
-                                    } else if (updatedRecognitions == null) {
-                                        level = 3;
-                                        telemetry.addData("Level", level);
-                                        telemetry.update();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
-                StrafeRightforTime(.5, 0.210);
-                //sleep(1000);
-                driveForward(.1, 12);
-                //sleep(1000)
-                //Step 2.5: Spin Carousel with max power for 1 sec
-                SpinCarousel(-.5,2);
-                //sleep(1000);
-                driveReverse(.25, 61);
-                //sleep(1000);
-                turnRight(.5,.575);
-                //sleep(1000);
-                robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                moveArm(armSpeed, levelThree);
-                //sleep(4000);
-                driveForward(.25, 21);
-                sleep(1000);
-                robot.basket.setPosition(0.35);
-                sleep(1000);
-                robot.basket.setPosition(0.18);
-                sleep(1000);
-                moveArm(armSpeed, drivingPosition);
-                driveReverse(.25, 21);
-                //sleep(1000);
-                turnLeft(.5,.6);
-                //sleep(1000);
-                StrafeLeftforTime(.25,.5);
-                //Step 4: Drive to Warehouse
-                driveReverse(.25, 70);
- //           }
+            //turnLeft(.25, 2);
+            stop();
+            StrafeRightforTime(.5, .22);
+            //sleep(1000);
+            driveForward(.1, 13);
+            sleep(1000);
+            //Step 2.5: Spin Carousel with max power for 1 sec
+            SpinCarousel(-.5, 2);
+            //sleep(1000);
+            driveReverse(.25, 61);
+            //sleep(1000);
+            turnRight(.5, .570);
+            //sleep(1000);
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            moveArm(armSpeed, levelThree);
+            sleep(1000);
+            driveForward(.25, 18);
+            sleep(500);
+            robot.basket.setPosition(1);
+            sleep(500);
+            robot.basket.setPosition(.6);
+            //sleep(1000);
+            moveArm(.75, drivingPosition);
+            driveReverse(.25, 18);
+            //sleep(1000);
+            turnLeft(.5, .58);
+            //sleep(1000);
+            StrafeLeftforTime(.5, .20);
+            //Step 4: Drive to Warehouse
+            driveReverse(.75, 65);
+            moveArm(.5, downPosition);
+            //           }
         }
     }
-  public void turnRight(double speed,
+
+    public void turnRight(double speed,
                           double seconds) {
         //For this method it takes 5 seconds to turn 90 degrees-Prabhav-10/17/2021
         // Ensure that the opmode is still active
-      robot.front_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-      robot.front_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-      robot.back_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-      robot.back_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        robot.front_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        robot.front_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        robot.back_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        robot.back_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         if (opModeIsActive()) {
 
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = 0;
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_left.setPower(speed);
                 robot.front_right.setPower(-speed);
@@ -254,8 +195,9 @@ public class FFAuto extends LinearOpMode {
 
         }
     }
+
     public void turnLeft(double speed,
-                          double seconds) {
+                         double seconds) {
         //For this method it takes 5 seconds to turn 90 degrees-Prabhav-10/17/2021
         // Ensure that the opmode is still active
         robot.front_left.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -264,9 +206,9 @@ public class FFAuto extends LinearOpMode {
         robot.back_right.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         if (opModeIsActive()) {
 
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = 0;
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_left.setPower(-speed);
                 robot.front_right.setPower(speed);
@@ -285,6 +227,7 @@ public class FFAuto extends LinearOpMode {
 
         }
     }
+
     //Drive forward for a certain number of seconds
     public void DriveforTime(double speed,
                              double seconds) {
@@ -296,9 +239,9 @@ public class FFAuto extends LinearOpMode {
         if (opModeIsActive()) {
 
             runtime.reset();
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = runtime.milliseconds();
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(speed);
                 robot.back_right.setPower(speed);
@@ -327,9 +270,9 @@ public class FFAuto extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = 0;
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(speed);
                 robot.back_right.setPower(-speed);
@@ -359,9 +302,9 @@ public class FFAuto extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = 0;
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.front_right.setPower(-speed);
                 robot.back_right.setPower(speed);
@@ -387,9 +330,9 @@ public class FFAuto extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            double milliseconds = seconds*1000;
+            double milliseconds = seconds * 1000;
             double i = 0;
-            while (opModeIsActive() && i < milliseconds ) {
+            while (opModeIsActive() && i < milliseconds) {
 
                 robot.spincarousel.setPower(speed);
 
@@ -404,7 +347,7 @@ public class FFAuto extends LinearOpMode {
     }
 
 
-    public void driveReverse (double speed, double distance) {
+    public void driveReverse(double speed, double distance) {
         encoderDriveReverse(speed, distance, distance, 30);
 
     }
@@ -474,8 +417,7 @@ public class FFAuto extends LinearOpMode {
                                     && robot.back_right.isBusy()
                                     && robot.front_right.isBusy()
                                     && robot.front_left.isBusy()
-                                    &&  runtime.seconds() < timeoutS)*/
-            {
+                                    &&  runtime.seconds() < timeoutS)*/ {
                 //Provides current position and updates it every time it changes
                 telemetry.addData("Curr Velocity at time ", "backleft(%.2f), " +
                                 "backright (%.2f)",
@@ -601,14 +543,13 @@ public class FFAuto extends LinearOpMode {
 
     }
 
-
     /**
      * Initialize the Vuforia localization engine.
      */
-  /*      private void initVuforia() {
-        *//*
+    private void initVuforia() {
+        /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         *//*
+         */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -620,10 +561,10 @@ public class FFAuto extends LinearOpMode {
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
-        *//**
-         * Initialize the TensorFlow Object Detection engine.
-         *//*
-        private void initTfod() {
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
@@ -633,14 +574,103 @@ public class FFAuto extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
-*/
+
     public void moveArm(double speed, int position) {
         robot.arm.setPower(speed);
         robot.arm.setTargetPosition(position);
         robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(robot.arm.isBusy()) {
+        while (robot.arm.isBusy()) {
             sleep(1);
         }
         robot.arm.setPower(0);
     }
-}
+
+    public void detectObject() {
+
+        /**
+         * Activate TensorFlow Object Detection before we wait for the start command.
+         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+         **/
+        if (tfod != null) {
+            tfod.activate();
+
+            // The TensorFlow software will scale the input images from the camera to a lower resolution.
+            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
+            // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
+            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
+            // should be set to the value of the images used to create the TensorFlow Object Detection model
+            // (typically 16/9).
+            tfod.setZoom(1.0, 16.0 / 9.0);
+        }
+        //Scan the duck, set level
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // step through the list of recognitions and display boundary info.
+                int i = 0;
+                for (Recognition recognition : updatedRecognitions) {
+
+                    telemetry.addData("Entire Image Width", recognition.getImageWidth());
+                    telemetry.addData("Entire Image Height", recognition.getImageHeight());
+                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                            recognition.getLeft(), recognition.getTop());
+                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                            recognition.getRight(), recognition.getBottom());
+                    telemetry.addData("Image Height", recognition.getHeight());
+                    telemetry.addData("Image Width", recognition.getWidth());
+                    telemetry.addData("i:",i);
+                    i++;
+                    double xCoordinate = recognition.getLeft();
+                    if (recognition.getLabel() == "Duck") {
+                        if (xCoordinate <= 250) {
+                            level = 1;
+                            telemetry.addData("Level xCoordinate<250", level);
+                            telemetry.update();
+                            break;
+                        } else if (xCoordinate > 250) {
+                            level = 2;
+                            telemetry.addData("Level xCoordinate>250", level);
+                            telemetry.update();
+                            break;
+                        }
+                    }
+                    else {level = 3;
+                        telemetry.addData("Else part of Level recognition.getLabel()==Duck", level);
+                        telemetry.update();
+                        break;
+                    }
+                }
+
+                //telemetry.clearAll();
+                //if Statement to determine level for shipping hub and display level on driver station- Vikrant
+                /*if (updatedRecognitions != null) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        double xCoordinate = recognition.getLeft();
+                        if (recognition.getLabel() == "Duck") {
+                            if (xCoordinate < 100) {
+                                level = 1;
+                                telemetry.addData("Level", level);
+                                telemetry.update();
+                            } else if (xCoordinate > 250 && xCoordinate < 400) {
+                                level = 2;
+                                telemetry.addData("Level", level);
+                                telemetry.update();
+                            }
+                        }
+                    }
+                }*/
+
+            }
+            else if (level !=1 && level !=2){
+                level = 3;
+                telemetry.addData("Else part of updated recognitions != null:", level);
+                telemetry.update();
+            }
+
+            }
+        }
+    }

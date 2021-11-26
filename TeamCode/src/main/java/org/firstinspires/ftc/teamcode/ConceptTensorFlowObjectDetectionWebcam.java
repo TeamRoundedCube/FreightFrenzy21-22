@@ -65,10 +65,12 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
    *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
    *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
    */
-    private static final String TFOD_MODEL_ASSET = "rcLogo.tflite";
-    //private static final String TFOD_MODEL_ASSET = "rcLogo_Rmarker.tflite";
+  private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";//-where is this used in code?
     private static final String[] LABELS = {
-      "rcLogo"//,"Rmarker"
+            "Ball",
+            "Cube",
+            "Duck",
+            "Marker"
     };
 
     /*
