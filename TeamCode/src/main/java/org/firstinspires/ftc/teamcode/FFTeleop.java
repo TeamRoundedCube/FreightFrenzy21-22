@@ -102,58 +102,10 @@ public class FFTeleop extends OpMode {
         robot.back_right.setPower(strafePower);
 //}
 
-        // Arm Position Values
-/*
-        // If arm starts up
-        int downPosition = 1464;
-        int upPosition = 0;
-        int wallPosition = 675;
-*/
-
-        //If arm starts down
-        int downPosition = 0;
-        int drivingPosition = 350;
-        int levelOne = 3300;
-        int levelTwo = 2900;
-        int levelThree = 2300;
-        double armSpeed = 0.75;
-
-///*
-        //Arm
-        if (gamepad1.dpad_down) { //Intake position
-            moveArm(armSpeed, downPosition);
-            robot.basket.setPosition(0.35);
-        } else if (gamepad1.dpad_right) { // Level 1
-            moveArm(armSpeed, levelOne);
-
-        } else if (gamepad1.dpad_left) { //Level 2
-            moveArm(armSpeed, levelTwo);
-
-        } else if (gamepad1.dpad_up) { //Level 3
-            //sleep(1000);
-            moveArm(armSpeed, levelThree);
-
-        } else if (gamepad1.right_bumper) { //Driving Position
-            //testArm();
-            moveArm(armSpeed, drivingPosition);
-
-        }
-//*/
         robot.spincarousel.setPower(gamepad1.right_trigger);
             //robot.spincarousel.setPower(1);
         robot.spincarousel.setPower(-gamepad1.left_trigger);
             //robot.spincarousel.setPower(-1);
-
-        //X button Override
-
-        if (gamepad1.x) {
-            robot.arm.setPower(0);
-            robot.basket.setPosition(0.35);
-            sleep(1000);
-            //robot.flick.setPosition(0.38);
-            robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            //robot.claw.resetDeviceConfigurationForOpMode();
-        }
 
 
 
@@ -164,8 +116,40 @@ public class FFTeleop extends OpMode {
         float intakePower = -gamepad2.left_stick_y;
         robot.intake.setPower(intakePower);
 
+
+
+        // Arm Position Values
+
+        int downPosition = 0;
+        int drivingPosition = 350;
+        int levelOne = 3300;
+        int levelTwo = 2900;
+        int levelThree = 2300;
+        double armSpeed = 0.75;
+
+        //Arm
+        if (gamepad2.dpad_down) { //Intake position
+            moveArm(armSpeed, downPosition);
+            robot.basket.setPosition(0.35);
+        } else if (gamepad2.dpad_right) { // Level 1
+            moveArm(armSpeed, levelOne);
+
+        } else if (gamepad2.dpad_left) { //Level 2
+            moveArm(armSpeed, levelTwo);
+
+        } else if (gamepad2.dpad_up) { //Level 3
+            //sleep(1000);
+            moveArm(armSpeed, levelThree);
+
+        } else if (gamepad2.right_bumper) { //Driving Position
+            //testArm();
+            moveArm(armSpeed, drivingPosition);
+
+        }
+
+
         if(gamepad2.y) {
-            robot.basket.setPosition(0.6);
+            robot.basket.setPosition(0.35);
             if(robot.arm.getCurrentPosition() != drivingPosition) {
                 moveArm(armSpeed, drivingPosition);
             }
@@ -176,11 +160,23 @@ public class FFTeleop extends OpMode {
         } else if (gamepad2.x) {
             robot.basket.setPosition(1);
             sleep(1000);
-            if(robot.arm.getCurrentPosition() != drivingPosition) {
-                moveArm(armSpeed, drivingPosition);
+            if(robot.arm.getCurrentPosition() != downPosition) {
+                moveArm(armSpeed, downPosition);
+                robot.basket.setPosition(0.35);
+                sleep(300);
             }
         }
+/*
+        //X button Override
 
+        if (gamepad2.x) {
+            robot.arm.setPower(0);
+            robot.basket.setPosition(0.35);
+            sleep(1000);
+            robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            //robot.claw.resetDeviceConfigurationForOpMode();
+        }
+*/
         //telemetry.addData("Distance (cm)",
           //      String.format(Locale.US, "%.02f", robot.color_left.getDistance(DistanceUnit.CM)));
        /* telemetry.addData("Alpha", robot.color_left.alpha());
@@ -193,7 +189,7 @@ public class FFTeleop extends OpMode {
 
         telemetry.addData("Encoder", robot.arm.getCurrentPosition());
         telemetry.addData("Basket", robot.basket.getPosition());
-        //telemetry.addData("RightTrigger", gamepad1.right_trigger);
+        telemetry.addData("RightTrigger", gamepad1.right_trigger);
         //telemetry.addData("autoAim?", autoAim);
         telemetry.update();
 
