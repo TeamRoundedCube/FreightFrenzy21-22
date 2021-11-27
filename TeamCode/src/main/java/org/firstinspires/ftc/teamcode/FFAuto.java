@@ -104,6 +104,12 @@ public class FFAuto extends LinearOpMode {
     //Variable for levels on shipping hub- Vikrant
     //level too generic
     int level = 0;
+    boolean firstLevel = false;
+    boolean secondLevel = false;
+    boolean thirdLevel = false;
+    int accuracyLevelOne = 0;
+    int accuracyLevelTwo = 0;
+    int accuracyLevelThree = 0;
 
     @Override
     public void runOpMode() {
@@ -113,6 +119,7 @@ public class FFAuto extends LinearOpMode {
         int levelTwo = 2900;
         int levelThree = 2300;
         double armSpeed = 0.25;
+
 
         //HardwareMap for Drive Motors and arm- Vikrant
         robot.init(hardwareMap);
@@ -145,6 +152,7 @@ public class FFAuto extends LinearOpMode {
             telemetry.addData("Level at start:", level);
             telemetry.update();
             //turnLeft(.25, 2);
+            sleep(3000);
             stop();
             StrafeRightforTime(.5, .22);
             //sleep(1000);
@@ -608,8 +616,10 @@ public class FFAuto extends LinearOpMode {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
+                telemetry.update();
                 // step through the list of recognitions and display boundary info.
                 int i = 0;
+                level = 3;
                 for (Recognition recognition : updatedRecognitions) {
 
                     telemetry.addData("Entire Image Width", recognition.getImageWidth());
@@ -626,19 +636,23 @@ public class FFAuto extends LinearOpMode {
                     double xCoordinate = recognition.getLeft();
                     if (recognition.getLabel() == "Duck") {
                         if (xCoordinate <= 250) {
-                            level = 1;
+                           level = 1;
                             telemetry.addData("Level xCoordinate<250", level);
                             telemetry.update();
+                           // accuracyLevelOne++;
                             break;
                         } else if (xCoordinate > 250) {
-                            level = 2;
+                           level = 2;
                             telemetry.addData("Level xCoordinate>250", level);
                             telemetry.update();
+                           // accuracyLevelTwo++;
                             break;
+                        } else if (updatedRecognitions.size() == 0){
+                           level = 3;
                         }
                     }
-                    else if (recognition.getLabel() == "Marker")
-                    {level = 3;
+                    if (recognition.getLabel() == "Marker")
+                     {level = 3;
                         telemetry.addData("recognition.getLabel() = Marker", level);
                         telemetry.update();
                         break;
@@ -664,12 +678,12 @@ public class FFAuto extends LinearOpMode {
                     }
                 }*/
 
-            }
+            } /*
             else {
                 level = 3;
                 telemetry.addData("Else part of updated recognitions != null:", level);
                 telemetry.update();
-            }
+            }*/
 
             }
         }
