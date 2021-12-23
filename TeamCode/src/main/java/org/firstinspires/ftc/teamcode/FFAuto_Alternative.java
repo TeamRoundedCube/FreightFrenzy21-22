@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 import java.util.List;
 
 /**
@@ -52,9 +53,9 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "FFAuto", group = "Concept")
+@Autonomous(name = "FFAuto_Alternative", group = "Concept")
 //@Disabled
-public class FFAuto extends LinearOpMode {
+public class FFAuto_Alternative extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //HardwareFullBot robot = new HardwareFullBot();
     FFHardwareFullBot robot = new FFHardwareFullBot();
@@ -115,10 +116,10 @@ public class FFAuto extends LinearOpMode {
     public void runOpMode() {
         int downPosition = 0;
         int drivingPosition = 350;
-        int levelOne = 3320; //3300
-        int levelTwo = 2920; //2850;
-        int levelThree = 2350; //2300;
-        double armSpeed = .5;
+        int levelOne = 3300;
+        int levelTwo = 2850;
+        int levelThree = 2300;
+        double armSpeed = 1;
 
 
         //HardwareMap for Drive Motors and arm- Vikrant
@@ -151,38 +152,32 @@ public class FFAuto extends LinearOpMode {
             telemetry.clear();
             telemetry.addData("Level at start:", level);
             telemetry.update();
-            //robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            //moveArm(armSpeed, levelOne);
-            //stop();
-            driveForward(.25, 2);
-            turnLeft(.25, 1.2);
-            StrafeLeftforTime(0.4,.5);
-            StrafeRightforTime(0.25, .5);
+            driveForward(.5, 3);
+            //turnLeft(.25, 1.2);
+            StrafeLeftforTime(0.5,0.58);
+            //StrafeRightforTime(0.25, .5);
             //sleep(1000);
-            driveForward(.4, 22.5);
-            //driveForward(.25, 24);
+            //driveForward(.4, 23);
             //driveForward(.1, 4.5);
-            sleep(1000);
-            driveForward(.1, 1.5);
-            //driveForward(.1, 1.5);
+            //driveForward(.1, 4.25);
             //sleep(1000);
             //Step 2.5: Spin Carousel with max power for 1 sec
-            SpinCarousel(-.5, 2);
+            //SpinCarousel(-.5, 2);
             //sleep(1000);
-            driveReverse(.5, 57);
+            //driveReverse(.5, 57);
             //sleep(500);
-            turnRight(.25, 1.2);
+            //turnRight(.25, 1.2);
             //sleep(1000);
             robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             if (level == 1) {
                 moveArm(armSpeed, levelOne);
                 sleep(500);
-                driveForward(.5, 5);
+                driveForward(.5, 6);
             }
             else if (level == 2) {
                 moveArm(armSpeed, levelTwo);
                 sleep(500);
-                driveForward(.5, 6.5);
+                driveForward(.5, 9);
             }
             else if (level == 3) {
                 moveArm(armSpeed, levelThree);
@@ -193,10 +188,10 @@ public class FFAuto extends LinearOpMode {
             sleep(1000);
 
             if (level == 1) {
-                driveReverse(.25, 5);
+                driveReverse(.25, 6);
             }
             else if (level == 2) {
-                driveReverse(.25, 6.5);
+                driveReverse(.25, 9);
             }
             else if (level == 3) {
                 driveReverse(.25, 15);
@@ -205,13 +200,31 @@ public class FFAuto extends LinearOpMode {
             sleep(500);
             moveArm(1, downPosition);
             //sleep(1000);
-            turnLeft(.5, .58);
+            turnLeft(.5, .52);
             //sleep(1000);
             StrafeLeftforTime(.5, .5);
             //Step 4: Drive to Warehouse
-            driveReverse(.5, 65);
+            driveReverse(.5, 64);
             //moveArm(.5, downPosition);
             //           }
+            // Start intake, Drive forward to shipping hub, straiph left a little,
+            // turn and drop ball or cube inside level.
+            intakecollect(1, 1.5);
+            driveForward(.5,77);
+            StrafeRightforTime(.25, .35);
+            turnRight(.25, 1.2);
+            moveArm(armSpeed, levelThree);
+            driveForward(.5, 15);
+            robot.basket.setPosition(1);
+            sleep(500);
+            robot.basket.setPosition(.35);
+            sleep(500);
+            moveArm(armSpeed,downPosition);
+            driveReverse(1, 15);
+            turnLeft(.5, .52);
+            StrafeLeftforTime(.5, .5);
+            driveReverse(.75, 65);
+            StrafeRightforTime(.5, .7);
         }
     }
 
@@ -243,6 +256,26 @@ public class FFAuto extends LinearOpMode {
             robot.back_right.setPower(0);
             robot.front_left.setPower(0);
             robot.back_left.setPower(0);
+
+        }
+    }
+
+    public void intakecollect (double speed, double seconds){
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            double milliseconds = seconds * 1000;
+            double i = 0;
+            while (opModeIsActive() && i < milliseconds) {
+
+                robot.intake.setPower(speed);
+
+                sleep(1);
+                i++;
+            }
+
+            // Stop all motion;
+            robot.intake.setPower(0);
 
         }
     }
@@ -396,6 +429,7 @@ public class FFAuto extends LinearOpMode {
 
         }
     }
+
 
 
     public void driveReverse(double speed, double distance) {
@@ -649,7 +683,7 @@ public class FFAuto extends LinearOpMode {
                 int i = 0;
                 level = 3;
                 for (Recognition recognition : updatedRecognitions) {
-/*
+
                     telemetry.addData("Entire Image Width", recognition.getImageWidth());
                     telemetry.addData("Entire Image Height", recognition.getImageHeight());
                     telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
@@ -660,7 +694,6 @@ public class FFAuto extends LinearOpMode {
                     telemetry.addData("Image Height", recognition.getHeight());
                     telemetry.addData("Image Width", recognition.getWidth());
                     telemetry.addData("i:",i);
- */
                     i++;
                     double xCoordinate = recognition.getLeft();
                     if (recognition.getLabel() == "Duck") {

@@ -102,9 +102,11 @@ public class FFTeleop extends OpMode {
         robot.back_right.setPower(strafePower);
 //}
 
-        robot.spincarousel.setPower(gamepad1.right_trigger);
+        float maxCarousel = (float) 0.75;
+
+        robot.spincarousel.setPower((gamepad1.right_trigger)*maxCarousel);
             //robot.spincarousel.setPower(1);
-        robot.spincarousel.setPower(-gamepad1.left_trigger);
+        robot.spincarousel.setPower(-(gamepad1.left_trigger)*maxCarousel);
             //robot.spincarousel.setPower(-1);
 
 
@@ -114,6 +116,7 @@ public class FFTeleop extends OpMode {
 
         // intake power
         float intakePower = -gamepad2.left_stick_y;
+        //float intakePower = -1; - changed by Savita for Marc testing on 12-12-21
         robot.intake.setPower(intakePower);
 
 
@@ -122,9 +125,9 @@ public class FFTeleop extends OpMode {
 
         int downPosition = 0;
         int drivingPosition = 350;
-        int levelOne = 3300;
-        int levelTwo = 2900;
-        int levelThree = 2300;
+        int levelOne = 3000;
+        int levelTwo = 2600;
+        int levelThree = 2000;
         double armSpeed = 0.75;
 
         //Arm
@@ -158,13 +161,20 @@ public class FFTeleop extends OpMode {
             robot.basket.setPosition(0.35);
             //sleep(1000);*/
         } else if (gamepad2.x) {
-            robot.basket.setPosition(1);
+            robot.basket.setPosition(0);
             sleep(1000);
             if(robot.arm.getCurrentPosition() != downPosition) {
                 moveArm(armSpeed, downPosition);
                 robot.basket.setPosition(0.35);
                 sleep(300);
             }
+        }
+// 0.95 - 0.45
+        if(gamepad2.b) {
+            robot.element.setPosition(0.95);
+        }
+        if(gamepad2.a) {
+            robot.element.setPosition(0.45);
         }
 /*
         //X button Override
@@ -189,7 +199,7 @@ public class FFTeleop extends OpMode {
 
         telemetry.addData("Encoder", robot.arm.getCurrentPosition());
         telemetry.addData("Basket", robot.basket.getPosition());
-        telemetry.addData("RightTrigger", gamepad1.right_trigger);
+        telemetry.addData("LeftTrigger", gamepad1.left_trigger);
         //telemetry.addData("autoAim?", autoAim);
         telemetry.update();
 

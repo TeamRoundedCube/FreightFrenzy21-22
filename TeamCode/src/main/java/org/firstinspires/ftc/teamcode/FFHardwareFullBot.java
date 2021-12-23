@@ -46,7 +46,7 @@ public class FFHardwareFullBot {
     //public ColorSensor bottomColor;
 
     public Servo basket;
-    //public Servo flick;
+    public Servo element;
     //public Servo drop;
 
     /* local OpMode members. */
@@ -112,7 +112,7 @@ public class FFHardwareFullBot {
         //bottomColor = hwMap.get(ColorSensor.class,"bottomcolor");
 
         // Define and initialize ALL installed servos.
-   //     flick = hwMap.get(Servo.class, "flick");
+       element = hwMap.get(Servo.class, "element");
    //     drop = hwMap.get(Servo.class, "drop");
         basket = hwMap.get(Servo.class, "basket");
 /*
