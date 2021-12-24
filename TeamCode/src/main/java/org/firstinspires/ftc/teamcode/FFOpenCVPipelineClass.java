@@ -9,22 +9,24 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-import java.lang.*;
 
 //Making the Pipeline
 
 public class FFOpenCVPipelineClass extends OpenCvPipeline {
+
+
 
     //Mat = Matric
     //Making the YCbCr Matric
     Mat YCbCr = new Mat();
 
 
-    public enum Location  {
+    public enum Location {
 
         LEFT,
         MIDDLE,
-        RIGHT
+        RIGHT,
+        NOTHING
 
     }
     static Location location;
@@ -54,7 +56,8 @@ public class FFOpenCVPipelineClass extends OpenCvPipeline {
         Scalar lowYCrCb = new Scalar(53, 62, 27);
         Scalar highYCrCb = new Scalar(128, 139, 109);
 
-        
+
+
         /*
         Yellow by Vikrant
         Scalar lowYCrCb = new Scalar(20, 142, 20);
@@ -100,6 +103,9 @@ public class FFOpenCVPipelineClass extends OpenCvPipeline {
         boolean stoneLeft = leftValue > PERCENT_COLOR_THRESHOLD;
         boolean stoneMiddle = middleValue > PERCENT_COLOR_THRESHOLD;
         boolean stoneRight = rightValue > PERCENT_COLOR_THRESHOLD;
+        boolean nothingDetectedLevel1 = leftValue < PERCENT_COLOR_THRESHOLD;
+        boolean nothingDetectedLevel2 = middleValue < PERCENT_COLOR_THRESHOLD;
+        boolean nothingDetectedLevel3 = rightValue < PERCENT_COLOR_THRESHOLD;
 
         if (stoneLeft) {
 
@@ -113,6 +119,22 @@ public class FFOpenCVPipelineClass extends OpenCvPipeline {
         } else if (stoneRight) {
 
             location = location.RIGHT;
+
+        }
+        else if (nothingDetectedLevel1){
+
+            location = location.NOTHING;
+
+        }
+        else if (nothingDetectedLevel2){
+
+            location = location.NOTHING;
+
+        }
+        else if (nothingDetectedLevel3){
+
+            location = location.NOTHING;
+
 
         }
 
@@ -139,9 +161,13 @@ public class FFOpenCVPipelineClass extends OpenCvPipeline {
 
         return location;
 
+
     }
 
-
 }
+
+
+
+
 
 

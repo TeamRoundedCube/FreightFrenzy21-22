@@ -19,7 +19,7 @@ public class FFOpenCVcolorTest extends LinearOpMode{
     @Override
     public void runOpMode() {
 
-        int Level;
+        int level = 0;
 
         //Instance of OpenCV class
         FFOpenCVPipelineClass opencv = new FFOpenCVPipelineClass();
@@ -50,11 +50,37 @@ public class FFOpenCVcolorTest extends LinearOpMode{
             @Override
             public void onError(int errorCode)
             {
-                /*
-                 * This will be called if the camera could not be opened
-                 */
+
+
+
             }
         });
+
+        if (opencv.getLocation() == FFOpenCVPipelineClass.Location.LEFT) {
+            level = 1;
+            telemetry.addData("Level", 1);
+            telemetry.update();
+            sleep(3000);
+
+        } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.MIDDLE) {
+            level = 2;
+            telemetry.addData("Level", 2);
+            telemetry.update();
+            sleep(3000);
+
+        } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.RIGHT) {
+            level = 3;
+            telemetry.addData("Level", 3);
+            telemetry.update();
+            sleep(3000);
+
+        } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.NOTHING) {
+            level = 0;
+            telemetry.addLine("Nothing Detected");
+            telemetry.update();
+            sleep(3000);
+
+        }
 
         telemetry.addLine("Waiting for start");
         telemetry.update();
@@ -64,30 +90,24 @@ public class FFOpenCVcolorTest extends LinearOpMode{
         //Uses getLocation function from OpenCV class to find and display Level
         if (opModeIsActive()) {
 
-            switch (opencv.getLocation()){
 
-                case LEFT:
-                    Level = 1;
-                    telemetry.addData("Level", 1);
-                    telemetry.update();
-                    sleep(1000);
-                    break;
-                case MIDDLE:
-                    Level = 2;
-                    telemetry.addData("Level", 2);
-                    telemetry.update();
-                    sleep(1000);
-                    break;
-                case RIGHT:
-                    Level = 3;
-                    telemetry.addData("Level", 3);
-                    telemetry.update();
-                    sleep(1000);
-                    break;
+            if (level == 1) {
+                telemetry.addLine("Running Program Level 1");
+                telemetry.update();
+            }
+            else if (level == 2) {
 
-
+                telemetry.addLine("Running Program Level 2");
+                telemetry.update();
 
             }
+            else if (level == 3) {
+
+                telemetry.addLine("Running Program Level 3");
+                telemetry.update();
+
+            }
+
 
         }
 
@@ -97,6 +117,5 @@ public class FFOpenCVcolorTest extends LinearOpMode{
 
 
 }
-
 
 
