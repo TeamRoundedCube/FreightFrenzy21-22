@@ -20,7 +20,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
-import java.lang.*;
 
 @Autonomous(name = "FFAuto_With_OpenCV", group = "Concept")
 public class FFAuto_With_OpenCV extends LinearOpMode{
@@ -44,15 +43,17 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
-        int downPosition = 0;
-        int drivingPosition = 350;
-        int levelOne = 3320; //3300
-        int levelTwo = 2920; //2850;
-        int levelThree = 2350; //2300;
-        double armSpeed = .5;
 
         int level = 0;
+        int downPosition = 0;
+        int drivingPosition = 350;
+        int levelOne = 3000;
+        int levelTwo = 2600;
+        int levelThree = 2000;
+        double armSpeed = .5;
+
+        //Initialize Hardware Map
+        robot.init(hardwareMap);
 
         //Instance of OpenCV class
         FFOpenCVPipelineClass opencv = new FFOpenCVPipelineClass();
@@ -83,51 +84,58 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             @Override
             public void onError(int errorCode)
             {
-                /*
-                 * This will be called if the camera could not be opened
-                 */
+
+
+
             }
         });
-
-        /*switch (opencv.getLocation()){
-
-
-            case LEFT:
+        while (opModeIsActive() == false) {
+            if (opencv.getLocation() == FFOpenCVPipelineClass.Location.LEFT) {
                 level = 1;
-                telemetry.addData("Level", 1);
+                telemetry.addData("LEFT-Level", 1);
                 telemetry.update();
-                sleep(5000);
-                break;
-            case MIDDLE:
+                //sleep(3000);
+
+            } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.MIDDLE) {
                 level = 2;
-                telemetry.addData("Level", 2);
+                telemetry.addData("MIDDLE-Level", 2);
                 telemetry.update();
-                sleep(5000);
-                break;
-            case RIGHT:
+                //sleep(3000);
+
+            } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.RIGHT) {
                 level = 3;
-                telemetry.addData("Level", 3);
+                telemetry.addData("RIGHT-Level", 3);
                 telemetry.update();
-                sleep(5000);
-                break;
+                //sleep(3000);
 
+            } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.NOTHING) {
+                level = 0;
+                telemetry.addLine("Nothing Detected");
+                telemetry.update();
+                //sleep(3000);
 
-       }*/
+            }
+        }
         telemetry.addLine("Waiting for start");
         telemetry.update();
-
 
         waitForStart();
 
         //Uses getLocation function from OpenCV class to find and display Level
         if (opModeIsActive()) {
-            //driveForward(0.1,0.5);
-            /*driveForward(.25, 2);
-            turnLeft(.25, 1.2);
+            //robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //moveArm(armSpeed, levelOne);
+            //stop();
+            telemetry.addData("opModIsActive-Level:", level);
+            telemetry.update();
+            //sleep(5000);
+            //stop();
+            driveForward(.25, 2);
+            turnLeft(.25, 1.4);
             StrafeLeftforTime(0.4,.5);
             StrafeRightforTime(0.25, .5);
             //sleep(1000);
-            driveForward(.4, 22.5);
+            driveForward(.4, 31);
             //driveForward(.25, 24);
             //driveForward(.1, 4.5);
             sleep(1000);
@@ -137,13 +145,12 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             //Step 2.5: Spin Carousel with max power for 1 sec
             SpinCarousel(-.5, 2);
             //sleep(1000);
-            driveReverse(.5, 57);
+            driveReverse(.5, 62);
             //sleep(500);
-            turnRight(.25, 1.2);
+            turnRight(.25, 1.4);
             //sleep(1000);
-
-*/
-           /* if (level == 1) {
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            if (level == 1) {
                 moveArm(armSpeed, levelOne);
                 sleep(500);
                 driveForward(.5, 5);
@@ -157,65 +164,8 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
                 moveArm(armSpeed, levelThree);
                 sleep(500);
                 driveForward(.5, 15);
-            } */
-            switch (opencv.getLocation()) {
-
-
-                case LEFT:
-                    level = 1;
-                    telemetry.addData("Level", 1);
-                    telemetry.update();
-                    sleep(5000);
-                    break;
-                case MIDDLE:
-                    level = 2;
-                    telemetry.addData("Level", 2);
-                    telemetry.update();
-                    sleep(5000);
-                    break;
-                case RIGHT:
-                    level = 3;
-                    telemetry.addData("Level", 3);
-                    telemetry.update();
-                    sleep(5000);
-                    break;
             }
-           /* switch (level){
-
-
-                case 1:
-                    //level = 1;
-                    telemetry.addData("Level", 1);
-                    telemetry.update();
-                    sleep(1000);
-                    moveArm(armSpeed, levelOne);
-                    sleep(500);
-                    driveForward(.5, 5);
-                case 2:
-                    //level = 2;
-                    telemetry.addData("Level", 2);
-                    telemetry.update();
-                    sleep(1000);
-                    moveArm(armSpeed, levelTwo);
-                    sleep(500);
-                    driveForward(.5, 6.5);
-                case 3:
-                    //level = 3;
-                    telemetry.addData("Level", 3);
-                    telemetry.update();
-                    sleep(1000);
-                    moveArm(armSpeed, levelThree);
-                    sleep(500);
-                    driveForward(.5, 15);
-
-
-
-
-
-            }
-          */
-
-         /*   robot.basket.setPosition(1);
+            robot.basket.setPosition(1);
             sleep(1000);
 
             if (level == 1) {
@@ -227,7 +177,7 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             else if (level == 3) {
                 driveReverse(.25, 15);
             }
-            robot.basket.setPosition(.35);
+            robot.basket.setPosition(.3);
             sleep(500);
             moveArm(1, downPosition);
             //sleep(1000);
@@ -235,14 +185,35 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             //sleep(1000);
             StrafeLeftforTime(.5, .5);
             //Step 4: Drive to Warehouse
-            driveReverse(.5, 65);
+            driveReverse(.5, 76);
             //moveArm(.5, downPosition);
             //           }
-*/
+
+            if (level == 1) {
+                telemetry.addLine("Running Program Level 1");
+                telemetry.update();
+            }
+            else if (level == 2) {
+
+                telemetry.addLine("Running Program Level 2");
+                telemetry.update();
+
+            }
+            else if (level == 3) {
+
+                telemetry.addLine("Running Program Level 3");
+                telemetry.update();
+
+            }
+
+
         }
 
 
     }
+
+
+
 
     public void moveArm(double speed, int position) {
         robot.arm.setPower(speed);

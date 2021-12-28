@@ -133,15 +133,18 @@ public class FFTeleop extends OpMode {
         //Arm
         if (gamepad2.dpad_down) { //Intake position
             moveArm(armSpeed, downPosition);
-            robot.basket.setPosition(0.35);
+            robot.basket.setPosition(0.3);
         } else if (gamepad2.dpad_right) { // Level 1
+           // robot.basket.setPosition(0.45);
+
             moveArm(armSpeed, levelOne);
 
         } else if (gamepad2.dpad_left) { //Level 2
+          //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelTwo);
 
         } else if (gamepad2.dpad_up) { //Level 3
-            //sleep(1000);
+           //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelThree);
 
         } else if (gamepad2.right_bumper) { //Driving Position
@@ -151,30 +154,30 @@ public class FFTeleop extends OpMode {
         }
 
 
-        if(gamepad2.y) {
-            robot.basket.setPosition(0.35);
-            if(robot.arm.getCurrentPosition() != drivingPosition) {
-                moveArm(armSpeed, drivingPosition);
-            }
+     //   if(gamepad2.y) {
+     //       robot.basket.setPosition(0.3);
             //sleep(1000);
         /*} else if(gamepad2.b) {
             robot.basket.setPosition(0.35);
             //sleep(1000);*/
-        } else if (gamepad2.x) {
-            robot.basket.setPosition(0);
+      //  }
+
+        //Basket: 1 - 0.3   (Open: 0.45)
+        if (gamepad2.x) {
+            robot.basket.setPosition(1);
             sleep(1000);
             if(robot.arm.getCurrentPosition() != downPosition) {
                 moveArm(armSpeed, downPosition);
-                robot.basket.setPosition(0.35);
+                robot.basket.setPosition(0.3);
                 sleep(300);
             }
         }
-// 0.95 - 0.45
+// Element: 0.95 - 0.45     (0.6 Pickup Position) (0.95 Default)
         if(gamepad2.b) {
-            robot.element.setPosition(0.95);
+            robot.element.setPosition(0.6);
         }
         if(gamepad2.a) {
-            robot.element.setPosition(0.45);
+            robot.element.setPosition(0.95);
         }
 /*
         //X button Override

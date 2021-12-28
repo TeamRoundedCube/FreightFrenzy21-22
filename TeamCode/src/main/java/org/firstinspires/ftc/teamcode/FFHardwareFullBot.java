@@ -28,10 +28,10 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 public class FFHardwareFullBot {
 
     //Objects
-    public DcMotorEx front_left  =null;
+    public DcMotorEx front_left  = null;
     public DcMotorEx front_right = null;
-    public DcMotorEx back_left =null;
-    public DcMotorEx back_right =null;
+    public DcMotorEx back_left = null;
+    public DcMotorEx back_right = null;
     public DcMotor spincarousel = null;
     public DcMotor arm;
     public DcMotor intake;
