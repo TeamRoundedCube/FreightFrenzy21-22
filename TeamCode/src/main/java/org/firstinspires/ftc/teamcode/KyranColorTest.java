@@ -15,13 +15,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 @Autonomous(name = "KyranColorTest")
 //@Disabled
 public class KyranColorTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    KyranHardwareFullBot robot = new KyranHardwareFullBot();
+    FFHardwareFullBot robot = new FFHardwareFullBot();
 
     static final double COUNTS_PER_MOTOR_REV = 400;    // 537 (Original)
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -46,9 +47,9 @@ public class KyranColorTest extends LinearOpMode {
         if (opModeIsActive()) {
 
             //driveInches(0.3, 10);
-            driveForward(0.3, 5);
-            sleep(2000);
-            driveReverse(0.5,5);
+            //driveForward(0.3, 5);
+            //sleep(2000);
+            //driveReverse(0.5,5);
 
 
 

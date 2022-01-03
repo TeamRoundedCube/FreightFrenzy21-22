@@ -119,37 +119,36 @@ public class FFAuto_Alternative_With_OpenCV extends LinearOpMode {
                 sleep(3000);
 
             }
+
+
+            /*//telemetry.addData("Mode", "starting gyro calibration...please wait");
+            //telemetry.update();
+            //telemetry.addData("X value",rawX);
+            //telemetry.addData("Y Value",rawY);
+            telemetry.addLine("Waiting for start");
+            telemetry.update();
+            robot.gyro.calibrate();
+            robot.gyro.resetZAxisIntegrator();
+            // make sure the gyro is calibrated before continuing
+            while (isStopRequested() == false && robot.gyro.isCalibrating()) {
+                sleep(50);
+                idle();
+            }
+
+            telemetry.addData("Mode", "gyro calibrated...waiting for start");
+            telemetry.update();
+            telemetry.addData("Status: ", robot.gyro.status());*/
         }
-
-        telemetry.addData("Mode", "starting gyro calibration...please wait");
-        telemetry.update();
-        //telemetry.addData("X value",rawX);
-        //telemetry.addData("Y Value",rawY);
-        telemetry.addLine("Waiting for start");
-        telemetry.update();
-        //gyro.calibrate();
-        //robot.gyro.resetZAxisIntegrator();
-        // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && robot.gyro.isCalibrating())
-        {
-            sleep(50);
-            idle();
-        }
-
-        telemetry.addData("Mode", "gyro calibrated...waiting for start");
-        telemetry.update();
-        telemetry.addData("Status: ", robot.gyro.status());
-
         // wait for start button.
 
         waitForStart();
 
         //Uses getLocation function from OpenCV class to find and display Level
         if (opModeIsActive()) {
-            robot.gyro.calibrate();
-            rotate(90,0.5);
+            //robot.gyro.calibrate();
+            //rotate(90,0.5);
             //rotate(-90,0.5);
-            /*telemetry.clear();
+            telemetry.clear();
             telemetry.addData("Level at start:", level);
             telemetry.update();
             driveForward(.5, 3);
@@ -251,7 +250,7 @@ public class FFAuto_Alternative_With_OpenCV extends LinearOpMode {
             StrafeLeftforTime(.5, .5);
             driveReverse(.75, 65);
             StrafeRightforTime(.5, .7);
-*/
+
 
 
         }
@@ -302,9 +301,9 @@ public class FFAuto_Alternative_With_OpenCV extends LinearOpMode {
         // clockwise (right).
         if (degrees < 0)
         {   // turn right.
-            while (degrees < 0){
-                targetAngle++;
-            }
+           // while (degrees < 0){
+           //     targetAngle++;
+           // }
             leftPower = power;
             rightPower = -power;
             robot.front_left.setPower(leftPower);
@@ -317,9 +316,9 @@ public class FFAuto_Alternative_With_OpenCV extends LinearOpMode {
         }
         else if (degrees > 0)
         {   // turn left.
-            while (degrees > 0){
-                targetAngle++;
-            }
+            //while (degrees > 0){
+            //    targetAngle++;
+            //}
             leftPower = -power;
             rightPower = power;
             robot.front_left.setPower(leftPower);
