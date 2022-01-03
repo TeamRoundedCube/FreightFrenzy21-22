@@ -13,6 +13,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -39,10 +41,12 @@ public class FFHardwareFullBot {
     public WebcamName webcam;
     //public VoltageSensor vsense;
 
-    //public ColorSensor frontColor;
+    public GyroSensor gyro;
     //public ColorSensor color_right;
     //public ColorSensor color_left;
-    //public DistanceSensor distance_left;
+    public DistanceSensor right_bk_distance;
+    public DistanceSensor right_fr_distance;
+    public DistanceSensor left_distance;
     //public ColorSensor bottomColor;
 
     public Servo basket;
@@ -115,14 +119,14 @@ public class FFHardwareFullBot {
        element = hwMap.get(Servo.class, "element");
    //     drop = hwMap.get(Servo.class, "drop");
         basket = hwMap.get(Servo.class, "basket");
-/*
-        color_left = hwMap.get(ColorSensor.class, "color_left");
-        color_right = hwMap.get(ColorSensor.class, "color_right");
-        distance_left = hwMap.get(DistanceSensor.class, "distance_left");
 
-        frontColor.green();
-    */
+        right_bk_distance = hwMap.get(DistanceSensor.class, "right_bk_distance");
+        right_fr_distance = hwMap.get(DistanceSensor.class, "right_fr_distance");
+        left_distance = hwMap.get(DistanceSensor.class, "left_distance");
 
+     //   frontColor.green();
+
+        gyro = hwMap.gyroSensor.get("gyro");
     }
 }
 

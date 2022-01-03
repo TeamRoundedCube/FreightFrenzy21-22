@@ -13,32 +13,23 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-
-import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //Created by Kyran 10/16/2021 @ 3:05pm
 //Purpose: Marc will use to test the new competition robot
 
 
-@TeleOp(name = "MarcsTeleop")
-public class MarcsTeleop extends OpMode {
+@TeleOp(name = "FFTeleopSlow")
+public class FFTeleopSlow extends OpMode {
 
     FFHardwareFullBot robot = new FFHardwareFullBot();
     boolean shooting = false;
     boolean autoAim = false;
     boolean squared = false;
     boolean light = false;
+    boolean tooClose = false;
 
     // Code to run ONCE when the driver hits INIT
 
@@ -79,19 +70,19 @@ public class MarcsTeleop extends OpMode {
         float strafePower = gamepad1.left_stick_x; //Strafe
         //float diagonalPoser = ?; //Diagonal
         // /*
-        telemetry.addData("leftx:", java.lang.Math.abs(gamepad1.left_stick_x));
-        telemetry.addData("lefty:", java.lang.Math.abs(gamepad1.left_stick_y));
+        telemetry.addData("leftx:", Math.abs(gamepad1.left_stick_x));
+        telemetry.addData("lefty:", Math.abs(gamepad1.left_stick_y));
         telemetry.update();
         // */
         // Diagonal
-        boolean diagonalY = (java.lang.Math.abs(gamepad1.left_stick_y) > 0.3 && java.lang.Math.abs(gamepad1.left_stick_y) < 0.8);
-        boolean diagonalX = (java.lang.Math.abs(gamepad1.left_stick_x) > 0.3 && java.lang.Math.abs(gamepad1.left_stick_x) < 0.8);
+        boolean diagonalY = (Math.abs(gamepad1.left_stick_y) > 0.3 && Math.abs(gamepad1.left_stick_y) < 0.8);
+        boolean diagonalX = (Math.abs(gamepad1.left_stick_x) > 0.3 && Math.abs(gamepad1.left_stick_x) < 0.8);
         boolean diagonal = diagonalY && diagonalX;
 
-/*
+
         //Gamepad1
-        robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-*/
+     //   robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
 //if (!diagonal) {
         // Turning (Right stick X)
@@ -114,58 +105,12 @@ public class MarcsTeleop extends OpMode {
         robot.back_right.setPower(strafePower);
 //}
 
-        // Arm Position Values
-/*
-        // If arm starts up
-        int downPosition = 1464;
-        int upPosition = 0;
-        int wallPosition = 675;
-*/
+        float maxCarousel = (float) 0.75;
 
-        //If arm starts down
-        int downPosition = 0;
-        int drivingPosition = 350;
-        int levelOne = 3300;
-        int levelTwo = 2900;
-        int levelThree = 2300;
-        double armSpeed = 0.75;
-
-///*
- /*       //Arm
-        if (gamepad1.dpad_down) { //Intake position
-            moveArm(armSpeed, downPosition);
-            robot.basket.setPosition(0.35);
-        } else if (gamepad1.dpad_right) { // Level 1
-            moveArm(armSpeed, levelOne);
-
-        } else if (gamepad1.dpad_left) { //Level 2
-            moveArm(armSpeed, levelTwo);
-
-        } else if (gamepad1.dpad_up) { //Level 3
-            //sleep(1000);
-            moveArm(armSpeed, levelThree);
-
-        } else if (gamepad1.right_bumper) { //Driving Position
-            //testArm();
-            moveArm(armSpeed, drivingPosition);
-
-        }
-//*/
-/*        robot.spincarousel.setPower(gamepad1.right_trigger);
+        robot.spincarousel.setPower((gamepad1.right_trigger)*maxCarousel);
             //robot.spincarousel.setPower(1);
-        robot.spincarousel.setPower(-gamepad1.left_trigger);
+        robot.spincarousel.setPower(-(gamepad1.left_trigger)*maxCarousel);
             //robot.spincarousel.setPower(-1);
-
-        //X button Override
-
-        if (gamepad1.x) {
-            robot.arm.setPower(0);
-            robot.basket.setPosition(0.35);
-            sleep(1000);
-            //robot.flick.setPosition(0.38);
-            robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            //robot.claw.resetDeviceConfigurationForOpMode();
-        }
 
 
 
@@ -174,25 +119,96 @@ public class MarcsTeleop extends OpMode {
 
         // intake power
         float intakePower = -gamepad2.left_stick_y;
+        //float intakePower = -1; - changed by Savita for Marc testing on 12-12-21
         robot.intake.setPower(intakePower);
 
-        if(gamepad2.y) {
-            robot.basket.setPosition(0.6);
-            if(robot.arm.getCurrentPosition() != drivingPosition) {
-                moveArm(armSpeed, drivingPosition);
+
+
+        // Arm Position Values
+
+        int downPosition = 0;
+        int drivingPosition = 350;
+        int levelOne = 3000;
+        int levelTwo = 2600;
+        int levelThree = 2000;
+        int elementPos = 3500;
+        int elementDrop = 1800;
+        double armSpeed = 0.75;
+
+        //Arm
+        if (gamepad2.dpad_down) { //Intake position
+            moveArm(armSpeed, downPosition);
+            robot.basket.setPosition(0.3);
+        } else if (gamepad2.dpad_right) { // Level 1
+           // robot.basket.setPosition(0.45);
+
+            moveArm(armSpeed, levelOne);
+
+        } else if (gamepad2.dpad_left) { //Level 2
+          //  robot.basket.setPosition(0.45);
+            moveArm(armSpeed, levelTwo);
+
+        } else if (gamepad2.dpad_up) { //Level 3
+           //  robot.basket.setPosition(0.45);
+            moveArm(armSpeed, levelThree);
+
+        } else if (gamepad2.right_bumper) { //Driving Position
+            //testArm();
+            moveArm(armSpeed, elementDrop);
+            //077[robot.element.setPosition(0.95);
+
+        } else if (gamepad2.left_bumper) { //element Position
+            //testArm();
+            moveArm(armSpeed, elementPos);
+            robot.element.setPosition(0.6);
+        }
+
+        if (gamepad2.y) {
+            if(robot.left_distance.getDistance(DistanceUnit.CM) <= 40) {
+                tooClose = true;
+            } else {
+                tooClose = false;
             }
+
+            telemetry.addData("Too Close? : ", tooClose);
+            telemetry.update();
+        }
+     //   if(gamepad2.y) {
+     //       robot.basket.setPosition(0.3);
             //sleep(1000);
         /*} else if(gamepad2.b) {
             robot.basket.setPosition(0.35);
-            //sleep(1000);/*
-  /*      } else if (gamepad2.x) {
+            //sleep(1000);*/
+      //  }
+
+        //Basket: 1 - 0.3   (Open: 0.45)
+        if (gamepad2.x) {
             robot.basket.setPosition(1);
             sleep(1000);
-            if(robot.arm.getCurrentPosition() != drivingPosition) {
-                moveArm(armSpeed, drivingPosition);
+            if(robot.arm.getCurrentPosition() != downPosition) {
+                moveArm(armSpeed, downPosition);
+                robot.basket.setPosition(0.3);
+                sleep(300);
             }
-        }*/
+        }
+// Element: 0.95 - 0.45     (0.6 Pickup Position) (0.95 Default)
+        if(gamepad2.b) {
+            robot.element.setPosition(0.6);
+        }
+        if(gamepad2.a) {
+            robot.element.setPosition(0.95);
+        }
+/*
+        //X button Override
 
+        if (gamepad2.x) {
+            robot.arm.setPower(0);
+            robot.basket.setPosition(0.35);
+            sleep(1000);
+            robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            //robot.claw.resetDeviceConfigurationForOpMode();
+        }
+*/
         //telemetry.addData("Distance (cm)",
           //      String.format(Locale.US, "%.02f", robot.color_left.getDistance(DistanceUnit.CM)));
        /* telemetry.addData("Alpha", robot.color_left.alpha());
@@ -205,8 +221,8 @@ public class MarcsTeleop extends OpMode {
 
         telemetry.addData("Encoder", robot.arm.getCurrentPosition());
         telemetry.addData("Basket", robot.basket.getPosition());
-        //telemetry.addData("RightTrigger", gamepad1.right_trigger);
-        //telemetry.addData("autoAim?", autoAim);
+        telemetry.addData("LeftTrigger", gamepad1.left_trigger);
+        telemetry.addData("Left Distance (cm): ", robot.left_distance.getDistance(DistanceUnit.CM));
         telemetry.update();
 
     }
@@ -224,10 +240,10 @@ public class MarcsTeleop extends OpMode {
         robot.arm.setPower(speed);
         robot.arm.setTargetPosition(position);
         robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(robot.arm.isBusy()) {
-            sleep(1);
-        }
-        robot.arm.setPower(0);
+      //  while(robot.arm.isBusy()) {
+      //      sleep(1);
+      //  }
+      //  robot.arm.setPower(0);
     }
 
     public void testArm() {
