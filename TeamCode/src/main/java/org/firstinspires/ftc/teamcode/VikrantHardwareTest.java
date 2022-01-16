@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @Autonomous(name="VikrantHardwareTest", group="Util")
-//@Disabled
+@Disabled
 public class VikrantHardwareTest extends LinearOpMode {
 
 

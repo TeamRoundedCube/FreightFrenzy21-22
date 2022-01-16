@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -53,7 +54,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "FreightFrenzyAuto_WithoutVuforia", group = "Concept")
-//@Disabled
+@Disabled
 public class FreightFrenzyAuto_WithoutVuforia extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //HardwareFullBot robot = new HardwareFullBot();

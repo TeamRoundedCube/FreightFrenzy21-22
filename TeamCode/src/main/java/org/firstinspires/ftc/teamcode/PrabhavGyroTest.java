@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Autonomous(name = "PrabhavGyroTest")
+    @Disabled
 public class PrabhavGyroTest extends LinearOpMode {
-//@Disabled
+
 
         FFHardwareFullBot robot = new FFHardwareFullBot();
 
@@ -26,7 +28,7 @@ public class PrabhavGyroTest extends LinearOpMode {
             //telemetry.addData("Y Value",rawY);
             //telemetry.addLine("Waiting for start");
             //telemetry.update();
-            robot.gyro.calibrate();
+          //  robot.gyro.calibrate();
             //robot.gyro.resetZAxisIntegrator();
             // make sure the gyro is calibrated before continuing
             while (!isStopRequested() && robot.gyro.isCalibrating()) {

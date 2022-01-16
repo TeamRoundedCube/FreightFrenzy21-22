@@ -132,22 +132,22 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             //stop();
             driveForward(.25, 2);
             turnLeft(.25, 1.4);
-            StrafeLeftforTime(0.4,.5);
-            StrafeRightforTime(0.25, .5);
+            StrafeLeftforTime(0.4,.6);
+            StrafeRightforTime(0.25, .7);
             //sleep(1000);
             driveForward(.4, 31);
             //driveForward(.25, 24);
             //driveForward(.1, 4.5);
             sleep(1000);
-            driveForward(.1, 1.5);
+            driveForward(.1, 1.0);
             //driveForward(.1, 1.5);
             //sleep(1000);
             //Step 2.5: Spin Carousel with max power for 1 sec
             SpinCarousel(-.5, 2);
             //sleep(1000);
-            driveReverse(.5, 62);
+            driveReverse(.5, 64);
             //sleep(500);
-            turnRight(.25, 1.4);
+            turnRight(.25, 1.5);
             //sleep(1000);
             robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             if (level == 1) {

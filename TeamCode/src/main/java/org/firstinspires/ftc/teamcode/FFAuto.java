@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -53,7 +54,7 @@ import java.util.List;
  * is explained below.
  */
 @Autonomous(name = "FFAuto", group = "Concept")
-//@Disabled
+@Disabled
 public class FFAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //HardwareFullBot robot = new HardwareFullBot();

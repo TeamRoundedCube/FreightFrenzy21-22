@@ -11,6 +11,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -42,16 +43,14 @@ public class FFHardwareFullBot {
     //public VoltageSensor vsense;
 
     public GyroSensor gyro;
-    //public ColorSensor color_right;
-    //public ColorSensor color_left;
+
+    public BNO055IMU imu;
     public DistanceSensor right_bk_distance;
     public DistanceSensor right_fr_distance;
     public DistanceSensor left_distance;
-    //public ColorSensor bottomColor;
 
     public Servo basket;
     public Servo element;
-    //public Servo drop;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -112,12 +111,9 @@ public class FFHardwareFullBot {
         front_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         back_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         back_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //frontColor = hwMap.get(ColorSensor.class,"frontcolor");
-        //bottomColor = hwMap.get(ColorSensor.class,"bottomcolor");
 
         // Define and initialize ALL installed servos.
        element = hwMap.get(Servo.class, "element");
-   //     drop = hwMap.get(Servo.class, "drop");
         basket = hwMap.get(Servo.class, "basket");
 
         right_bk_distance = hwMap.get(DistanceSensor.class, "right_bk_distance");
@@ -127,6 +123,21 @@ public class FFHardwareFullBot {
      //   frontColor.green();
 
         gyro = hwMap.gyroSensor.get("gyro");
+
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hwMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
     }
 }
 

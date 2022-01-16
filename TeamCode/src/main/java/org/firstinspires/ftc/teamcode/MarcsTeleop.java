@@ -11,6 +11,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -32,6 +33,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 
 @TeleOp(name = "MarcsTeleop")
+@Disabled
 public class MarcsTeleop extends OpMode {
 
     FFHardwareFullBot robot = new FFHardwareFullBot();

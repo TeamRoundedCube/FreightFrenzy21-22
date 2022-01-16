@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -52,7 +53,7 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Zebra Levels", group = "Concept")
-//@Disabled
+@Disabled
 public class Zebra_Levels extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "zebra2.tflite";
     private static final String[] LABELS = {

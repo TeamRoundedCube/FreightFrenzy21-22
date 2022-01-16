@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -49,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  * is explained below.
  */
 @Autonomous(name = "FFAuto_WithoutVuforia_DropCube_WEncoder", group = "Concept")
-//@Disabled
+@Disabled
 public class FFAuto_WithoutVuforia_DropCube_WithEncoders extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //HardwareFullBot robot = new HardwareFullBot();

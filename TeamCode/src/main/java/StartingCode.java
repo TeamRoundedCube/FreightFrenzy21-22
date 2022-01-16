@@ -1,4 +1,5 @@
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.HardwareFullBot;
 
    // Comment added by Rajiv J 9/26/2021 at 9:44am
 @Autonomous(name="StartingCode")
+@Disabled
 public class StartingCode extends LinearOpMode {
 
 
