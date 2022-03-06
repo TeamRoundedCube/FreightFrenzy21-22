@@ -10,12 +10,13 @@
 
 
 package org.firstinspires.ftc.teamcode;
-
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 //Created by Kyran 10/16/2021 @ 3:05pm
 //Purpose: Marc will use to test the new competition robot
@@ -56,6 +57,7 @@ public class FFTeleop extends OpMode {
     @Override
     public void start() {
         robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
     }
 
 
@@ -174,8 +176,35 @@ else {
           //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelTwo);
         } else if (gamepad2.dpad_up) { //Level 3
-           //  robot.basket.setPosition(0.45);
+            //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelThree);
+        }
+
+    if (gamepad2.y) {
+        if ((robot.front_distance.getDistance(DistanceUnit.CM) <= 16))
+                //|| (robot.left_distance.getDistance(DistanceUnit.CM) <= 40))
+                //|| (robot.right_fr_distance.getDistance(DistanceUnit.CM) <= 40))
+            {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            tooClose = true;
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("left_distance: ", robot.left_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("right_fr_distance: ", robot.right_fr_distance.getDistance(DistanceUnit.CM));
+            telemetry.update();
+            }
+        else if ((robot.front_distance.getDistance(DistanceUnit.CM) > 16) &&(robot.front_distance.getDistance(DistanceUnit.CM) <= 21) )
+            {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+            //telemetry.addData("left_distance: ", robot.left_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("right_fr_distance: ", robot.right_fr_distance.getDistance(DistanceUnit.CM));
+            }
+        else
+        {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+        }
+    }
 /*
         } else if (gamepad2.right_bumper) { //Driving Position
             //testArm();
@@ -187,7 +216,6 @@ else {
             moveArm(armSpeed, elementPos);
             robot.element.setPosition(0.6);
 */
-        }
 /*
         if (gamepad2.y) {
             if(robot.left_distance.getDistance(DistanceUnit.CM) <= 40) {

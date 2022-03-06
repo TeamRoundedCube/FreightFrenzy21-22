@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -45,12 +47,17 @@ public class FFHardwareFullBot {
     public GyroSensor gyro;
 
     public BNO055IMU imu;
-    public DistanceSensor right_bk_distance;
-    public DistanceSensor right_fr_distance;
-    public DistanceSensor left_distance;
+    //public DistanceSensor right_bk_distance;   // port 0 on control hub
+   // public DistanceSensor right_fr_distance;    //port 1 on control hub
+   // public DistanceSensor left_distance;     //port 2 on control hub
+    public DistanceSensor front_distance;  //port 3 on control hub
 
     public Servo basket;
     public Servo element;
+
+    public RevBlinkinLedDriver led;
+    RevBlinkinLedDriver.BlinkinPattern pattern;
+    Deadline ledCycleDeadline;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -116,14 +123,14 @@ public class FFHardwareFullBot {
        element = hwMap.get(Servo.class, "element");
         basket = hwMap.get(Servo.class, "basket");
 
-        right_bk_distance = hwMap.get(DistanceSensor.class, "right_bk_distance");
-        right_fr_distance = hwMap.get(DistanceSensor.class, "right_fr_distance");
-        left_distance = hwMap.get(DistanceSensor.class, "left_distance");
-
+        //right_bk_distance = hwMap.get(DistanceSensor.class, "right_bk_distance");
+      //  right_fr_distance = hwMap.get(DistanceSensor.class, "right_fr_distance");
+     //   left_distance = hwMap.get(DistanceSensor.class, "left_distance");
+        front_distance = hwMap.get(DistanceSensor.class, "front_distance");
      //   frontColor.green();
 
         gyro = hwMap.gyroSensor.get("gyro");
-
+        led = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 

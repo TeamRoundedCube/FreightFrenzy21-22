@@ -21,8 +21,8 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "FFAuto_With_OpenCV", group = "Concept")
-public class FFAuto_With_OpenCV extends LinearOpMode{
+@Autonomous(name = "FFAuto_With_OpenCV_RED_SIDE_ALT", group = "Concept")
+public class FFAuto_With_OpenCV_RED_SIDE_ALT extends LinearOpMode{
     //Webcam variable
     OpenCvWebcam webcam;
 
@@ -47,7 +47,7 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
         int level = 0;
         int downPosition = 0;
         int drivingPosition = 350;
-        int levelOne = 3000;
+        int levelOne = 2950;
         int levelTwo = 2600;
         int levelThree = 2000;
         double armSpeed = .5;
@@ -109,8 +109,8 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
                 //sleep(3000);
 
             } else if (opencv.getLocation() == FFOpenCVPipelineClass.Location.NOTHING) {
-                level = 0;
-                telemetry.addLine("Nothing Detected");
+                level = 3;
+                telemetry.addData("Nothing Detected-Default Level:",3);
                 telemetry.update();
                 //sleep(3000);
 
@@ -130,40 +130,110 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
             telemetry.update();
             //sleep(5000);
             //stop();
-            driveForward(.25, 2);
-            turnLeft(.25, 1.4);
-            StrafeLeftforTime(0.4,.6);
-            StrafeRightforTime(0.25, .7);
+            //driveForward(0.1,0.5);
+            StrafeLeftforTime(0.5,1);
+            //was 0.67 now .8
+            driveReverse(.5, 3);
+            sleep(500);
+            driveForward(0.5, 7);
+
+
+
+
+
+
+            /*
+            if (level == 1) {
+                driveReverse(.25, 5);
+            }
+            else if (level == 2) {
+                driveReverse(.25, 6.5);
+            }
+            else if (level == 3) {
+                driveReverse(.25, 15);
+            }
+            */
+
+
+            // StrafeRightforTime(0.25, .5);
             //sleep(1000);
-            driveForward(.4, 31);
+            // driveForward(.4, 22.5);
             //driveForward(.25, 24);
             //driveForward(.1, 4.5);
-            sleep(1000);
-            driveForward(.1, 1.0);
+            // sleep(1000);
+            // driveForward(.1, 1.5);
             //driveForward(.1, 1.5);
             //sleep(1000);
             //Step 2.5: Spin Carousel with max power for 1 sec
-            SpinCarousel(-.5, 2);
+
             //sleep(1000);
-            driveReverse(.5, 64);
+
+            sleep(1000);
+            //driveReverse(0.5,10);
+            //driveForward(0.6,4);
+
+            // driveReverse(.5, 57);
             //sleep(500);
-            turnRight(.25, 1.5);
+            // turnRight(.25, 1.2);
             //sleep(1000);
             robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             if (level == 1) {
                 moveArm(armSpeed, levelOne);
                 sleep(500);
-                driveForward(.5, 5);
+                driveForward(.5, 2);
             }
             else if (level == 2) {
                 moveArm(armSpeed, levelTwo);
                 sleep(500);
-                driveForward(.5, 6.5);
+                driveForward(.5, 3.5);
             }
             else if (level == 3) {
                 moveArm(armSpeed, levelThree);
                 sleep(500);
-                driveForward(.5, 15);
+                driveForward(.5, 11.5);
+            }
+            robot.basket.setPosition(1);
+            sleep(1000);
+
+            if (level == 1) {
+                driveReverse(.5, 7);
+            }
+            else if (level == 2) {
+                driveReverse(.5, 7);
+            }
+            else if (level == 3) {
+                driveReverse(.5, 7);
+            }
+            robot.basket.setPosition(.3);
+            sleep(500);
+            moveArm(1, downPosition);
+            driveReverse(0.5, 5);
+            sleep(1000);
+            turnLeft(.55,.5);
+            //turnRight(0.55, 0.5);
+            //StrafeRightforTime(0.5, 1);
+            StrafeLeftforTime(0.5, 1);
+            // was 1.5 now 1
+            driveReverse(1,60);
+            // was 45 now 60
+            StrafeRightforTime(0.5, .9);
+            stop();
+            /*
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            if (level == 1) {
+                moveArm(armSpeed, levelOne);
+                sleep(500);
+                driveForward(.5, 3);
+            }
+            else if (level == 2) {
+                moveArm(armSpeed, levelTwo);
+                sleep(500);
+                driveForward(.5, 4.5);
+            }
+            else if (level == 3) {
+                moveArm(armSpeed, levelThree);
+                sleep(500);
+                driveForward(.5, 13);
             }
             robot.basket.setPosition(1);
             sleep(1000);
@@ -178,33 +248,24 @@ public class FFAuto_With_OpenCV extends LinearOpMode{
                 driveReverse(.25, 15);
             }
             robot.basket.setPosition(.3);
-            sleep(500);
-            moveArm(1, downPosition);
+            sleep(1000);
+             */
+
+
+
+            // turnLeft(0.5,0.6);
+            //driveForward(0.5, 69);
+
+
+
+
+
+
+
+
             //sleep(1000);
-            turnLeft(.5, .58);
-            //sleep(1000);
-            StrafeLeftforTime(.5, .5);
-            //Step 4: Drive to Warehouse
-            driveReverse(.5, 76);
-            //moveArm(.5, downPosition);
-            //           }
 
-            if (level == 1) {
-                telemetry.addLine("Running Program Level 1");
-                telemetry.update();
-            }
-            else if (level == 2) {
 
-                telemetry.addLine("Running Program Level 2");
-                telemetry.update();
-
-            }
-            else if (level == 3) {
-
-                telemetry.addLine("Running Program Level 3");
-                telemetry.update();
-
-            }
 
 
         }

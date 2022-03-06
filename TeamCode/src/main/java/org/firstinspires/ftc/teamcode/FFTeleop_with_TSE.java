@@ -10,21 +10,20 @@
 
 
 package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 //Created by Kyran 10/16/2021 @ 3:05pm
 //Purpose: Marc will use to test the new competition robot
 
 
-@TeleOp(name = "FFTeleopSlow")
-@Disabled
-public class FFTeleopSlow extends OpMode {
+@TeleOp(name = "FFTeleop_with_TSE")
+public class FFTeleop_with_TSE extends OpMode {
 
     FFHardwareFullBot robot = new FFHardwareFullBot();
     boolean shooting = false;
@@ -58,6 +57,7 @@ public class FFTeleopSlow extends OpMode {
     @Override
     public void start() {
         robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
     }
 
 
@@ -72,59 +72,87 @@ public class FFTeleopSlow extends OpMode {
         float strafePower = gamepad1.left_stick_x; //Strafe
         //float diagonalPoser = ?; //Diagonal
         // /*
-        telemetry.addData("leftx:", Math.abs(gamepad1.left_stick_x));
-        telemetry.addData("lefty:", Math.abs(gamepad1.left_stick_y));
-        telemetry.update();
+        //telemetry.addData("leftx:", Math.abs(gamepad1.left_stick_x));
+        //telemetry.addData("lefty:", Math.abs(gamepad1.left_stick_y));
+        //telemetry.update();
         // */
         // Diagonal
-        boolean diagonalY = (Math.abs(gamepad1.left_stick_y) > 0.3 && Math.abs(gamepad1.left_stick_y) < 0.8);
-        boolean diagonalX = (Math.abs(gamepad1.left_stick_x) > 0.3 && Math.abs(gamepad1.left_stick_x) < 0.8);
-        boolean diagonal = diagonalY && diagonalX;
+        //boolean diagonalY = (Math.abs(gamepad1.left_stick_y) > 0.3 && Math.abs(gamepad1.left_stick_y) < 0.8);
+        //boolean diagonalX = (Math.abs(gamepad1.left_stick_x) > 0.3 && Math.abs(gamepad1.left_stick_x) < 0.8);
+        //boolean diagonal = diagonalY && diagonalX;
 
 
         //Gamepad1
-     //   robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
+        float maxSpeed = (float) 1;
 //if (!diagonal) {
         // Turning (Right stick X)
+if (Math.abs(gamepad1.right_stick_x) > 0.1 ) {
 
-        robot.front_left.setPower(-turnPower);
-        robot.front_right.setPower(turnPower);
-        robot.back_left.setPower(-turnPower);
-        robot.back_right.setPower(turnPower);
+    robot.front_left.setPower(-turnPower * maxSpeed);
+    robot.front_right.setPower(turnPower * maxSpeed);
+    robot.back_left.setPower(-turnPower * maxSpeed);
+    robot.back_right.setPower(turnPower * maxSpeed);
+}
+else
+{
+    robot.front_left.setPower(0);
+    robot.front_right.setPower(0);
+    robot.back_left.setPower(0);
+    robot.back_right.setPower(0);
+}
 
-        // Forward (Left stick Y)
-        robot.front_left.setPower(forwardPower);
-        robot.front_right.setPower(forwardPower);
-        robot.back_left.setPower(forwardPower);
-        robot.back_right.setPower(forwardPower);
-
+if (Math.abs(gamepad1.left_stick_y) > 0.1) {
+    // Forward (Left stick Y)
+    robot.front_left.setPower(forwardPower * maxSpeed);
+    robot.front_right.setPower(forwardPower * maxSpeed);
+    robot.back_left.setPower(forwardPower * maxSpeed);
+    robot.back_right.setPower(forwardPower * maxSpeed);
+}
+else {
+    robot.front_left.setPower(0);
+    robot.front_right.setPower(0);
+    robot.back_left.setPower(0);
+    robot.back_right.setPower(0);
+}
+if (Math.abs(gamepad1.left_stick_x) > 0.1) {
         // Strafe (Left stick X)
-        robot.front_left.setPower(strafePower);
-        robot.front_right.setPower(-strafePower);
-        robot.back_left.setPower(-strafePower);
-        robot.back_right.setPower(strafePower);
-//}
-
+        robot.front_left.setPower(strafePower * maxSpeed);
+        robot.front_right.setPower(-strafePower * maxSpeed);
+        robot.back_left.setPower(-strafePower * maxSpeed);
+        robot.back_right.setPower(strafePower * maxSpeed);
+}
+else {
+    robot.front_left.setPower(0);
+    robot.front_right.setPower(0);
+    robot.back_left.setPower(0);
+    robot.back_right.setPower(0);
+}
         float maxCarousel = (float) 0.75;
-
-        robot.spincarousel.setPower((gamepad1.right_trigger)*maxCarousel);
-            //robot.spincarousel.setPower(1);
-        robot.spincarousel.setPower(-(gamepad1.left_trigger)*maxCarousel);
-            //robot.spincarousel.setPower(-1);
-
-
+if (gamepad1.right_trigger != 0) {
+    robot.spincarousel.setPower((gamepad1.right_trigger) * maxCarousel);
+    //robot.spincarousel.setPower(1);
+}
+else
+{
+    robot.spincarousel.setPower(0);
+}
+if (gamepad1.left_trigger !=0){
+    robot.spincarousel.setPower(-(gamepad1.left_trigger) * maxCarousel);
+    //robot.spincarousel.setPower(-1);
+}
+else {
+    robot.spincarousel.setPower(0);
+}
 
         //Gamepad2
-
-
-        // intake power
-        float intakePower = -gamepad2.left_stick_y;
-        //float intakePower = -1; - changed by Savita for Marc testing on 12-12-21
-        robot.intake.setPower(intakePower);
-
-
+//if (gamepad2.left_stick_y != 0) {
+    // intake power
+    float intakePower = -gamepad2.left_stick_y;
+    //float intakePower = -1; - changed by Savita for Marc testing on 12-12-21
+    robot.intake.setPower(intakePower);
+//}
 
         // Arm Position Values
 
@@ -133,8 +161,8 @@ public class FFTeleopSlow extends OpMode {
         int levelOne = 3000;
         int levelTwo = 2600;
         int levelThree = 2000;
-        int elementPos = 3500;
-        int elementDrop = 1800;
+        int elementPos = 3300;
+        int elementDrop = 1900;
         double armSpeed = 0.75;
 
         //Arm
@@ -143,30 +171,71 @@ public class FFTeleopSlow extends OpMode {
             robot.basket.setPosition(0.3);
         } else if (gamepad2.dpad_right) { // Level 1
            // robot.basket.setPosition(0.45);
-
             moveArm(armSpeed, levelOne);
-
         } else if (gamepad2.dpad_left) { //Level 2
           //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelTwo);
-
         } else if (gamepad2.dpad_up) { //Level 3
-           //  robot.basket.setPosition(0.45);
+            //  robot.basket.setPosition(0.45);
             moveArm(armSpeed, levelThree);
-
-        } else if (gamepad2.right_bumper) { //Driving Position
-            //testArm();
-            moveArm(armSpeed, elementDrop);
-            //077[robot.element.setPosition(0.95);
-
-        } else if (gamepad2.left_bumper) { //element Position
-            //testArm();
-            moveArm(armSpeed, elementPos);
-            robot.element.setPosition(0.6);
         }
 
+    if (gamepad2.y) {
+        if ((robot.front_distance.getDistance(DistanceUnit.CM) <= 16))
+                //|| (robot.left_distance.getDistance(DistanceUnit.CM) <= 40))
+                //|| (robot.right_fr_distance.getDistance(DistanceUnit.CM) <= 40))
+            {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            tooClose = true;
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("left_distance: ", robot.left_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("right_fr_distance: ", robot.right_fr_distance.getDistance(DistanceUnit.CM));
+            telemetry.update();
+            }
+        else if ((robot.front_distance.getDistance(DistanceUnit.CM) > 16) &&(robot.front_distance.getDistance(DistanceUnit.CM) <= 21) )
+            {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+            //telemetry.addData("left_distance: ", robot.left_distance.getDistance(DistanceUnit.CM));
+           // telemetry.addData("right_fr_distance: ", robot.right_fr_distance.getDistance(DistanceUnit.CM));
+            }
+        else
+        {
+            robot.led.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+            telemetry.addData("front_distance: ", robot.front_distance.getDistance(DistanceUnit.CM));
+        }
+    }
+
+        if (gamepad2.right_bumper) {
+            telemetry.addData("RB clicked: ",elementDrop );
+            telemetry.update();
+            moveArm(.25, elementDrop);
+            robot.element.setPosition(0.75); //drop
+            }
+
+        if (gamepad2.left_bumper) {
+            moveArm(.50, elementPos); //pickup
+            /*robot.front_left.setPower(.1);
+            robot.front_right.setPower(.1);
+            robot.back_left.setPower(.1);
+            robot.back_right.setPower(.1);
+            sleep(10);
+            robot.front_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_left.setPower(0);
+            robot.back_right.setPower(0);
+            */
+            robot.element.setPosition(0.6);
+            }
+        if(gamepad2.a) {
+            //robot.element.setPosition(0.75);
+            //sleep (2000);
+            robot.element.setPosition(0.5);
+        }
+
+/*
         if (gamepad2.y) {
-            if(robot.front_distance.getDistance(DistanceUnit.CM) <= 40) {
+            if(robot.left_distance.getDistance(DistanceUnit.CM) <= 40) {
                 tooClose = true;
             } else {
                 tooClose = false;
@@ -175,6 +244,7 @@ public class FFTeleopSlow extends OpMode {
             telemetry.addData("Too Close? : ", tooClose);
             telemetry.update();
         }
+        */
      //   if(gamepad2.y) {
      //       robot.basket.setPosition(0.3);
             //sleep(1000);
@@ -194,12 +264,13 @@ public class FFTeleopSlow extends OpMode {
             }
         }
 // Element: 0.95 - 0.45     (0.6 Pickup Position) (0.95 Default)
-        if(gamepad2.b) {
+/*        if(gamepad2.b) {
             robot.element.setPosition(0.6);
         }
         if(gamepad2.a) {
             robot.element.setPosition(0.95);
         }
+*/
 /*
         //X button Override
 
@@ -220,13 +291,13 @@ public class FFTeleopSlow extends OpMode {
         */
         //telemetry.addData("Hue", hsvValues[0]);
 
-
+/*
         telemetry.addData("Encoder", robot.arm.getCurrentPosition());
         telemetry.addData("Basket", robot.basket.getPosition());
         telemetry.addData("LeftTrigger", gamepad1.left_trigger);
-        //telemetry.addData("Left Distance (cm): ", robot.left_distance.getDistance(DistanceUnit.CM));
+        telemetry.addData("Left Distance (cm): ", robot.left_distance.getDistance(DistanceUnit.CM));
         telemetry.update();
-
+*/
     }
 
     /*
@@ -242,10 +313,11 @@ public class FFTeleopSlow extends OpMode {
         robot.arm.setPower(speed);
         robot.arm.setTargetPosition(position);
         robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      //  while(robot.arm.isBusy()) {
-      //      sleep(1);
-      //  }
-      //  robot.arm.setPower(0);
+        /// Kyran changed on 1-2-2022 to try to make robot fast again
+        /*while(robot.arm.isBusy()) {
+            sleep(1);
+        }
+        robot.arm.setPower(0);*/
     }
 
     public void testArm() {

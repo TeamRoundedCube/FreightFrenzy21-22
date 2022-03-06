@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,9 +22,9 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import java.lang.*;
-
-@Autonomous(name = "FFAuto_With_OpenCV___BLUE_SIDE", group = "Concept")
-public class FFAuto_With_OpenCV___BLUE_SIDE extends LinearOpMode{
+@Disabled
+@Autonomous(name = "FFAuto_With_OpenCV___BLUE_SIDE_DO_NOT_USE", group = "Concept")
+public class FFAuto_With_OpenCV___BLUE_SIDE_DO_NOT_USE extends LinearOpMode{
     //Webcam variable
     OpenCvWebcam webcam;
 
