@@ -22,7 +22,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 //import com.qualcomm.robotcore.hardware.TouchSensor;
-
+@Disabled
 @Autonomous(name = "FFAuto_Alternative_With_OpenCV", group = "Concept")
 public class FFAuto_Alternative_With_OpenCV extends LinearOpMode {
     //Webcam variable
