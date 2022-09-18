@@ -131,7 +131,7 @@ public class FFAuto_With_OpenCV_RED_SIDE_ALT extends LinearOpMode{
             //sleep(5000);
             //stop();
             //driveForward(0.1,0.5);
-            StrafeLeftforTime(0.5,1);
+            StrafeLeftforTime(0.5,1.1);
             //was 0.67 now .8
             driveReverse(.5, 3);
             sleep(500);
@@ -214,7 +214,7 @@ public class FFAuto_With_OpenCV_RED_SIDE_ALT extends LinearOpMode{
             //StrafeRightforTime(0.5, 1);
             StrafeLeftforTime(0.5, 1);
             // was 1.5 now 1
-            driveReverse(1,60);
+            driveReverse(1,65);
             // was 45 now 60
             StrafeRightforTime(0.5, .9);
             stop();

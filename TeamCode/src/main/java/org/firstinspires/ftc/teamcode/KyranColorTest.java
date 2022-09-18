@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "KyranColorTest")
-@Disabled
 public class KyranColorTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

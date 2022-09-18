@@ -44,7 +44,7 @@ public class FFOpenCVPipelineClass extends OpenCvPipeline {
             new Point(201, 0),
             new Point(300, 225));
 
-    static double PERCENT_COLOR_THRESHOLD = 0.2;
+    static double PERCENT_COLOR_THRESHOLD = 0.025;
     //static double PERCENT_COLOR_THRESHOLD_ONE = 0.1;
 
 
